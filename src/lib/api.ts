@@ -1,6 +1,18 @@
+import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 import { readSession } from "./session";
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+export const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: { Accept: "application/json" },
+});
+
+apiClient.interceptors.request.use((config) => {
+  const session = readSession();
+  if (session?.token) config.headers.set("Authorization", `Bearer ${session.token}`);
+  return config;
+});
+
 export type Category = { _id: string; name: string; slug: string };
 export type Product = {
   _id: string; name: string; slug: string; description: string; shortDescription: string;
@@ -13,14 +25,23 @@ export type ProductPage = { items: Product[]; pagination: { page: number; limit:
 export type Order = { orderNumber: string; status: string; paymentStatus: string; items: { name: string; quantity: number; lineTotalMinor: number }[]; currency: string; subtotalMinor: number; totalMinor: number };
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const session = readSession();
-  const headers = new Headers(init.headers);
-  if (session?.token) headers.set("Authorization", `Bearer ${session.token}`);
-  if (init.body && !(init.body instanceof FormData)) headers.set("Content-Type", "application/json");
-  const response = await fetch(`${API_URL}${path}`, { ...init, headers });
-  const payload = await response.json().catch(() => null);
-  if (!response.ok) throw new Error(payload?.message || `Request failed (${response.status})`);
-  return payload.data as T;
+  const config: AxiosRequestConfig = {
+    url: path,
+    method: init.method || "GET",
+    headers: init.headers as AxiosRequestConfig["headers"],
+    signal: init.signal ?? undefined,
+  };
+  if (init.body !== undefined) config.data = init.body;
+
+  try {
+    const response = await apiClient.request<{ data: T }>(config);
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || `Request failed (${error.response?.status || "network error"})`);
+    }
+    throw error;
+  }
 }
 
 export const formatPrice = (minor: number, currency = "PKR") => new Intl.NumberFormat("en-PK", { style: "currency", currency, maximumFractionDigits: 2 }).format(minor / 100);
