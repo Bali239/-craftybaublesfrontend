@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { Alert, Avatar, Button, Card } from "antd";
 
 type AuthUser = { id: string; name: string; username: string; email: string; photoUrl: string };
 const SESSION_STORAGE_KEY = "naqashcorner.session";
@@ -10,6 +10,7 @@ type StoredSession = { token: string; user: AuthUser; expiresAt: string };
 export default function Home() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [error, setError] = useState("");
+  const [signingOut, setSigningOut] = useState(false);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   useEffect(() => {
@@ -54,38 +55,66 @@ export default function Home() {
 
   const signOut = async () => {
     const stored = localStorage.getItem(SESSION_STORAGE_KEY);
+    setSigningOut(true);
     try {
       if (stored) {
         const session = JSON.parse(stored) as StoredSession;
         await fetch(`${apiUrl}/api/auth/logout`, { method: "POST", headers: { Authorization: `Bearer ${session.token}` } });
       }
-    } finally { localStorage.removeItem(SESSION_STORAGE_KEY); setUser(null); }
+    } finally { localStorage.removeItem(SESSION_STORAGE_KEY); setUser(null); setSigningOut(false); }
   };
 
   return (
-    <main className="auth-shell">
-      <section className="auth-card">
-        <div className="brand-mark" aria-hidden="true">N<span>.</span></div>
-        <p className="eyebrow">NAQASH CORNER</p>
-        {user ? <>
-          <h1>Welcome, {user.name.split(" ")[0]}.</h1>
-          <p className="subtitle">You’re signed in and ready to continue.</p>
-          <div className="profile">
-            {user.photoUrl ? <Image src={user.photoUrl} alt="" width={44} height={44} unoptimized referrerPolicy="no-referrer" /> : <div className="avatar-fallback">{user.name[0]}</div>}
-            <div><strong>{user.username}</strong><span>{user.email}</span></div>
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#fbfaf7] via-[#f4f1eb] to-[#ece9df] px-5 py-9">
+      <Card
+        className="w-full max-w-[480px] border border-[#535845]/10 bg-white/85 text-center shadow-[0_20px_70px_rgba(53,56,44,0.07)]"
+        styles={{ body: { padding: 0 } }}
+      >
+        <div className="px-6 py-11 sm:px-[58px] sm:py-14">
+          <div aria-hidden="true" className="mx-auto mb-6 grid size-12 place-items-center rounded-full border border-[#9ba18d] font-serif text-2xl text-[#59634c]">
+            N<span className="text-[#b08b58]">.</span>
           </div>
-          <button className="signout" onClick={signOut}>Sign out</button>
-        </> : <>
-          <h1>Your next chapter<br />starts here.</h1>
-          <p className="subtitle">Sign in to your Naqash Corner account to pick up where you left off.</p>
-          <div className="signin-area">
-            <a className="google-button" href={`${apiUrl}/api/auth/google`}>Continue with Google</a>
-          </div>
-          {error && <p className="error" role="alert">{error}</p>}
-          <p className="terms">By continuing, you agree to our <a href="#terms">Terms</a> and <a href="#privacy">Privacy Policy</a>.</p>
-        </>}
-      </section>
-      <footer>Thoughtfully made for what matters.</footer>
+          <p className="mb-[22px] text-[10px] font-bold tracking-[0.25em] text-[#7c806f]">NAQASH CORNER</p>
+          {user ? <>
+            <h1 className="font-serif text-[31px] font-normal leading-tight tracking-[-0.025em] text-[#282b24] sm:text-[35px]">
+              Welcome, {user.name.split(" ")[0]}.
+            </h1>
+            <p className="mx-auto mb-7 mt-4 max-w-[320px] text-sm leading-7 text-[#77796e]">You’re signed in and ready to continue.</p>
+            <div className="mx-auto mb-6 flex max-w-[320px] items-center gap-3.5 rounded-md border border-[#e6e6dc] p-4 text-left">
+              <Avatar size={48} src={user.photoUrl} alt={user.name}>{user.name[0]}</Avatar>
+              <div className="min-w-0">
+                <p className="truncate text-[13px] font-semibold text-[#282b24]">{user.username}</p>
+                <p className="truncate text-xs text-[#77796e]">{user.email}</p>
+              </div>
+            </div>
+            <Button shape="round" onClick={signOut} loading={signingOut} className="!h-10 !border-[#d8dbcf] !px-6 !text-[#4f5944]">
+              Sign out
+            </Button>
+          </> : <>
+            <h1 className="font-serif text-[31px] font-normal leading-tight tracking-[-0.025em] text-[#282b24] sm:text-[35px]">
+              Your next chapter<br />starts here.
+            </h1>
+            <p className="mx-auto mb-7 mt-4 max-w-[320px] text-sm leading-7 text-[#77796e]">
+              Sign in to your Naqash Corner account to pick up where you left off.
+            </p>
+            <Button
+              href={`${apiUrl}/api/auth/google`}
+              size="large"
+              block
+              shape="round"
+              icon={<span aria-hidden="true" className="font-bold text-[#4285f4]">G</span>}
+              className="!h-12 !border-[#d6d8cf] !bg-white !font-semibold !text-[#3e4438] shadow-sm hover:!border-[#aeb4a2]"
+            >
+              Continue with Google
+            </Button>
+            {error && <Alert className="mt-4 text-left" type="error" showIcon message={error} />}
+            <p className="mb-0 mt-7 text-[11px] leading-5 text-[#98998f]">
+              By continuing, you agree to our <a className="text-[#626b52] underline underline-offset-2" href="#terms">Terms</a> and <a className="text-[#626b52] underline underline-offset-2" href="#privacy">Privacy Policy</a>.
+            </p>
+          </>}
+        </div>
+      </Card>
+      <footer className="mt-6 font-serif text-[13px] italic text-[#99998f]">Thoughtfully made for what matters.</footer>
     </main>
   );
 }

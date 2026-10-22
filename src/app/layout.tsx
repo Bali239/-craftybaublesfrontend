@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import "antd/dist/reset.css";
 import "./globals.css";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Sign in | Naqash Corner",
@@ -9,7 +12,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="min-h-screen bg-[#f4f1eb] font-sans text-[#252820] antialiased">
+        <AntdRegistry>
+          <Providers>{children}</Providers>
+        </AntdRegistry>
+      </body>
     </html>
   );
 }
