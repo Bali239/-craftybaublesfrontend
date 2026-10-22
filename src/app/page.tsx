@@ -50,7 +50,7 @@ export default function Home() {
           <label className="flex items-center gap-2 text-sm text-[#666b5e]"><Switch checked={filters.inStock} onChange={(value) => dispatch(setInStock(value))} /> In stock</label>
           <label className="flex items-center gap-2 text-sm text-[#666b5e]"><Switch checked={filters.discounted} onChange={(value) => dispatch(setDiscounted(value))} /> Discounted</label>
         </div>
-        {productsQuery.isError && <Alert className="mb-5" type="error" showIcon message={productsQuery.error.message} />}
+        {productsQuery.isError && <Alert className="mb-5" type="error" showIcon title={productsQuery.error.message} />}
         {productsQuery.isLoading ? <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{Array.from({ length: 8 }, (_, i) => <Card key={i}><Skeleton active /></Card>)}</div> : page?.items.length ? <>
           <div className="grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{page.items.map((product) => <Link href={`/products/${product.slug}`} key={product._id} className="group block text-inherit">
             <div className="relative aspect-[4/4.5] overflow-hidden rounded-xl bg-[#efeee8]">{product.images[0]?.secureUrl ? <Image fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw" src={product.images[0].secureUrl} alt={product.images[0].altText || product.name} className="object-cover transition duration-500 group-hover:scale-[1.035]" /> : <div className="grid size-full place-items-center font-serif text-5xl text-[#b3b5a9]">N.</div>}{product.discountPercent > 0 && <Tag color="red" className="absolute left-3 top-3">-{product.discountPercent}%</Tag>}</div>
