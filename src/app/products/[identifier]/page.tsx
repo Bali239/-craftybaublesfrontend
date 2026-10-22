@@ -8,8 +8,9 @@ import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert, App, Button, InputNumber, Skeleton, Tag } from "antd";
 import StoreHeader from "../../../components/StoreHeader";
-import { API_URL, api, formatPrice, type Product } from "../../../lib/api";
+import { api, formatPrice, type Product } from "../../../lib/api";
 import { readSession } from "../../../lib/session";
+import GoogleSignInButton from "../../../components/GoogleSignInButton";
 
 export default function ProductDetailPage() {
   const { message } = App.useApp();
@@ -30,7 +31,7 @@ export default function ProductDetailPage() {
         <p className="mt-6 whitespace-pre-line text-sm leading-7 text-[#6e7165]">{product.description}</p>{Boolean(product.attributes?.length) && <dl className="mt-6 divide-y divide-[#e9e7df] border-y border-[#e9e7df]">{product.attributes?.map((entry) => <div className="flex justify-between py-3 text-sm" key={entry.name}><dt className="text-[#87897e]">{entry.name}</dt><dd className="text-[#3e4438]">{entry.value}</dd></div>)}</dl>}
         {product.trackInventory && <p className="mt-5 text-xs text-[#85877d]">{product.availablePieces > 0 ? `${product.availablePieces} available` : "Currently out of stock"}</p>}
         <div className="mt-6 flex gap-3"><InputNumber min={1} max={product.trackInventory ? Math.max(1, product.availablePieces) : 99} value={quantity} onChange={(value) => setQuantity(value || 1)} size="large" disabled={product.trackInventory && product.availablePieces === 0} /><Button type="primary" size="large" className="flex-1" disabled={product.trackInventory && product.availablePieces === 0} loading={addMutation.isPending} onClick={() => signedIn ? addMutation.mutate() : message.info("Sign in first to add items to your cart.")}>Add to cart</Button></div>
-        {!signedIn && <Button type="link" href={`${API_URL}/api/auth/google`} className="mt-2 !px-0">Sign in with Google to shop</Button>}
+        {!signedIn && <GoogleSignInButton type="link" className="mt-2 !px-0">Sign in with Google to shop</GoogleSignInButton>}
       </div>
     </div>}
   </main></div>;

@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { App, Avatar, Button } from "antd";
-import { API_URL, api } from "../lib/api";
+import { api } from "../lib/api";
 import { clearSession, readSession, saveSession, type StoreUser } from "../lib/session";
+import GoogleSignInButton from "./GoogleSignInButton";
 
 export default function StoreHeader() {
   const { message } = App.useApp();
@@ -24,7 +25,13 @@ export default function StoreHeader() {
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
     }
     const authError = new URLSearchParams(window.location.search).get("auth_error");
-    if (authError) { message.error(authError); window.history.replaceState(null, "", window.location.pathname); }
+    if (authError) {
+      message.error(authError);
+      const search = new URLSearchParams(window.location.search);
+      search.delete("auth_error");
+      const query = search.toString();
+      window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
+    }
     const session = readSession();
     if (!session) { const task = window.setTimeout(() => { if (!cancelled) setReady(true); }, 0); return () => { cancelled = true; window.clearTimeout(task); }; }
     api<{ user: StoreUser }>("/api/auth/me").then(({ user: nextUser }) => {
@@ -42,7 +49,7 @@ export default function StoreHeader() {
       <nav className="flex items-center gap-3 text-sm">
         <Link href="/cart" className="px-2 text-[#53594c] hover:text-[#8a7051]">Cart</Link>
         {user?.role === "admin" && <Link href="/admin" className="px-2 text-[#53594c]">Manage store</Link>}
-        {ready && (user ? <><Avatar size="small" src={user.photoUrl}>{user.name[0]}</Avatar><span className="hidden text-[#53594c] sm:inline">{user.name.split(" ")[0]}</span><Button size="small" onClick={logout}>Sign out</Button></> : <Button href={`${API_URL}/api/auth/google`} type="primary" shape="round">Sign in</Button>)}
+        {ready && (user ? <><Avatar size="small" src={user.photoUrl}>{user.name[0]}</Avatar><span className="hidden text-[#53594c] sm:inline">{user.name.split(" ")[0]}</span><Button size="small" onClick={logout}>Sign out</Button></> : <GoogleSignInButton type="primary" shape="round">Sign in</GoogleSignInButton>)}
       </nav>
     </div>
   </header>;
