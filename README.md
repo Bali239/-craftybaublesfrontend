@@ -37,8 +37,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Google sign-in setup
 
 1. Create a Google OAuth 2.0 **Web application** client in Google Cloud Console and add your frontend origins (for local development, `http://localhost:3000`) to **Authorized JavaScript origins**.
-2. Copy `client/.env.example` to `client/.env.local` and set `NEXT_PUBLIC_GOOGLE_CLIENT_ID` to that client ID and `NEXT_PUBLIC_API_URL` to the Express server URL.
-3. Copy `server/.env.example` to `server/.env` and set the same `GOOGLE_CLIENT_ID`, a strong random `JWT_SECRET`, and your `MONGO_URI`. Set `CLIENT_URL` to the frontend origin.
+2. Set `NEXT_PUBLIC_API_URL` in `client/.env` to the Express server URL.
+3. Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `MONGO_URI` in `server/.env`. Set `GOOGLE_REDIRECT_URI` to `http://localhost:5000/api/auth/google/callaback` and `CLIENT_URL` to `http://localhost:3000`.
 4. Install server dependencies with `npm install` in `server/`, then start it with `npm run dev`. Start the frontend with `npm run dev` in `client/`.
 
-The frontend receives a Google ID token from Google Identity Services and posts it to `POST /api/auth/google`. The server verifies the token against the configured client ID, creates or loads the MongoDB user, and returns a seven-day JWT. The starter UI stores that JWT in local storage; production apps should prefer a secure, HTTP-only cookie session.
+The frontend redirects to `GET /api/auth/google`. The server starts Google's authorization-code flow, validates the returned `state`, exchanges the authorization code for tokens, verifies the ID token, and requests the user profile from Google's OpenID Connect userinfo endpoint. The callback creates or updates the MongoDB user (name, username, email, photo URL, provider, verified-email status, and last login) and creates a seven-day session. MongoDB stores only a hash of the opaque app session token, along with expiry, last activity, user agent, and IP address. The app bearer token is returned to the frontend in the URL fragment and then kept in local storage; it is sent in the `Authorization: Bearer` header to `GET /api/auth/me` and `POST /api/auth/logout`. Logout deletes the session document, revoking that token.
+
+In Google Cloud Console, add this exact URI under the OAuth client's **Authorized redirect URIs**: `http://localhost:5000/api/auth/google/callaback`. Google requires an exact match, including scheme and path. This project uses the spelling `callaback` in the route to match the URL above.
