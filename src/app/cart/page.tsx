@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Alert, Button, Empty, InputNumber, message, Skeleton } from "antd";
+import { Alert, App, Button, Empty, InputNumber, Skeleton } from "antd";
 import StoreHeader from "../../components/StoreHeader";
 import { API_URL, api, formatPrice, type Order, type Product } from "../../lib/api";
 import { readSession } from "../../lib/session";
@@ -13,6 +13,7 @@ import { readSession } from "../../lib/session";
 type CartItem = { product: Product; quantity: number; unitPriceMinor: number; lineTotalMinor: number };
 type Cart = { items: CartItem[]; subtotalMinor: number; itemCount: number; currency: string };
 export default function CartPage() {
+  const { message } = App.useApp();
   const client = useQueryClient();
   const router = useRouter();
   const [signedIn, setSignedIn] = useState(false);

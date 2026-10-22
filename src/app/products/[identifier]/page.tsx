@@ -6,12 +6,13 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Alert, Button, InputNumber, message, Skeleton, Tag } from "antd";
+import { Alert, App, Button, InputNumber, Skeleton, Tag } from "antd";
 import StoreHeader from "../../../components/StoreHeader";
 import { API_URL, api, formatPrice, type Product } from "../../../lib/api";
 import { readSession } from "../../../lib/session";
 
 export default function ProductDetailPage() {
+  const { message } = App.useApp();
   const params = useParams<{ identifier: string }>();
   const id = decodeURIComponent(params.identifier);
   const [quantity, setQuantity] = useState(1);

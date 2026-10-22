@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Alert, Button, Form, Input, InputNumber, message, Modal, Select, Table, Upload } from "antd";
+import { Alert, App, Button, Form, Input, InputNumber, Modal, Select, Table, Upload } from "antd";
 import type { UploadFile } from "antd";
 import StoreHeader from "../../components/StoreHeader";
 import { api, formatPrice, type Category, type Product } from "../../lib/api";
@@ -11,6 +11,7 @@ import { readSession } from "../../lib/session";
 
 type ProductForm = { name: string; description: string; shortDescription?: string; categoryId: string; brand?: string; sku?: string; price: number; discountPercent?: number; availablePieces: number; status: "draft" | "published" };
 export default function AdminPage() {
+  const { message } = App.useApp();
   const queryClient = useQueryClient();
   const [authorized, setAuthorized] = useState(false);
   const [files, setFiles] = useState<UploadFile[]>([]);

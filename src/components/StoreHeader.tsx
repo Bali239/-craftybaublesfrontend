@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Avatar, Button, message } from "antd";
+import { App, Avatar, Button } from "antd";
 import { API_URL, api } from "../lib/api";
 import { clearSession, readSession, saveSession, type StoreUser } from "../lib/session";
 
 export default function StoreHeader() {
+  const { message } = App.useApp();
   const router = useRouter();
   const [user, setUser] = useState<StoreUser | null>(null);
   const [ready, setReady] = useState(false);
@@ -30,7 +31,7 @@ export default function StoreHeader() {
       if (!cancelled) { setUser(nextUser); saveSession({ ...session, user: nextUser }); }
     }).catch(() => { clearSession(); if (!cancelled) setUser(null); }).finally(() => { if (!cancelled) setReady(true); });
     return () => { cancelled = true; };
-  }, []);
+  }, [message]);
   const logout = async () => {
     try { await api("/api/auth/logout", { method: "POST" }); } catch { /* local sign-out still clears this device */ }
     clearSession(); setUser(null); router.push("/");
