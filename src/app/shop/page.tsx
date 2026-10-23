@@ -152,7 +152,7 @@ export default function ShopPage() {
               <div className="grid grid-cols-3 gap-x-2 gap-y-4 sm:gap-x-3 sm:gap-y-5 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">{Array.from({ length: 10 }, (_, index) => <Card key={index} className="!border-0 !bg-transparent !p-0 !shadow-none"><Skeleton.Image active className="!h-auto !aspect-[4/4.2] !w-full" /><Skeleton active title={{ width: "68%" }} paragraph={{ rows: 1, width: "45%" }} className="mt-2" /></Card>)}</div>
             ) : page?.items.length ? <>
               <div aria-live="polite" className={`grid grid-cols-3 gap-x-2 gap-y-4 transition-opacity duration-200 motion-reduce:transition-none sm:gap-x-3 sm:gap-y-5 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 ${productsQuery.isFetching ? "opacity-70" : "opacity-100"}`}>
-                {page.items.map((product) => <article key={product._id} className="group relative min-w-0">
+                {page.items.map((product) => <article key={product._id} className="group relative flex min-w-0 flex-col">
                   <Link href={`/products/${product.slug}`} className="block text-inherit outline-none focus-visible:ring-2 focus-visible:ring-[#758064] focus-visible:ring-offset-4">
                   <div className="relative aspect-[4/4.2] overflow-hidden bg-[#efeee8]">
                     {product.images[0]?.secureUrl ? <Image fill sizes="(max-width: 640px) calc((100vw - 52px) / 2), (max-width: 768px) 30vw, (max-width: 1024px) 22vw, (max-width: 1536px) 18vw, 16vw" src={product.images[0].secureUrl} alt={product.images[0].altText || product.name} className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025] motion-reduce:transform-none motion-reduce:transition-none" /> : <div className="grid size-full place-items-center font-serif text-4xl text-[#b3b5a9]">N.</div>}
@@ -163,9 +163,9 @@ export default function ShopPage() {
                       <WishlistButton productId={product._id} productName={product.name} className="!relative !right-auto !top-auto !z-30 !size-8 !border-0 !bg-[#fbfaf7]/95 !text-[#4d5344] !shadow-none transition-colors hover:!bg-white hover:!text-rose-600 motion-reduce:transition-none" />
                     </div>
                   </div>
-                  <div className="flex flex-col pt-2">
+                  <div className="flex h-[88px] flex-col pt-2 sm:h-[92px]">
                     <p className="text-[9px] uppercase tracking-[0.12em] text-[#858978]">{product.category?.name || product.brand || "Collection"}</p>
-                    <h2 className="mt-0.5 line-clamp-2 text-xs leading-4 text-[#303429] transition-colors group-hover:text-[#697457] sm:text-[13px]">{product.name}</h2>
+                    <h2 className="mt-0.5 line-clamp-2 min-h-8 text-xs leading-4 text-[#303429] transition-colors group-hover:text-[#697457] sm:text-[13px]">{product.name}</h2>
                     <div className="flex items-baseline gap-1.5"><p className="text-[13px] font-semibold text-[#3d4235]">{formatPrice(product.salePriceMinor, product.currency)}</p>{product.discountPercent > 0 && <p className="text-[10px] text-[#9a9a90] line-through">{formatPrice(product.priceMinor, product.currency)}</p>}</div>
                   </div>
                   </Link>
@@ -178,7 +178,7 @@ export default function ShopPage() {
                       if (!readSession()) { toast.info("Sign in first to add items to your cart."); return; }
                       addToCart.mutate(product._id);
                     }}
-                    className="mt-1.5 !h-8 !rounded-none !border-[#d9dbd0] !bg-transparent !text-[11px] !font-medium !tracking-wide !text-[#4d5344] transition-colors hover:!border-[#758064] hover:!bg-[#758064] hover:!text-white motion-reduce:transition-none"
+                    className="!mt-auto !h-8 !shrink-0 !rounded-none !border-[#d9dbd0] !bg-transparent !text-[11px] !font-medium !tracking-wide !text-[#4d5344] transition-colors hover:!border-[#758064] hover:!bg-[#758064] hover:!text-white motion-reduce:transition-none"
                   >{product.trackInventory && product.availablePieces < 1 ? "Out of stock" : "Add to cart"}</Button>
                 </article>)}
               </div>
