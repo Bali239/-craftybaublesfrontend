@@ -87,47 +87,47 @@ export default function ShopPage() {
 
   const filterControls = (
     <div className="space-y-0 divide-y divide-[#eae8e0]">
-      <div className="pb-5">
-        <label htmlFor="product-search" className="mb-2.5 block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Search</label>
+      <div className="pb-3">
+        <label htmlFor="product-search" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Search</label>
         <Input id="product-search" allowClear placeholder="Search products…" value={filters.search} onChange={(event) => dispatch(setSearch(event.target.value))} className="filter-control" />
       </div>
-      <div className="py-5">
-        <label htmlFor="product-category" className="mb-2.5 block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Category</label>
+      <div className="py-3">
+        <label htmlFor="product-category" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Category</label>
         <Select id="product-category" className="filter-control w-full" value={filters.category || ""} onChange={(value) => dispatch(setCategory(value))} options={[{ value: "", label: "All categories" }, ...(categoriesQuery.data || []).map((category) => ({ value: category.slug, label: category.name }))]} />
       </div>
-      <div className="py-5">
-        <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Price range <span className="font-normal normal-case tracking-normal text-[#999b91]">(PKR)</span></p>
-        <div className="grid grid-cols-2 gap-2 rounded-lg border border-[#e4e3da] bg-white/70 p-2 transition-colors focus-within:border-[#9ca58b] focus-within:ring-2 focus-within:ring-[#758064]/15 motion-reduce:transition-none">
+      <div className="py-3">
+        <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Price range <span className="font-normal normal-case tracking-normal text-[#999b91]">(PKR)</span></p>
+        <div className="grid grid-cols-2 gap-1.5 rounded-lg border border-[#e4e3da] bg-white/70 p-1.5 transition-colors focus-within:border-[#9ca58b] focus-within:ring-2 focus-within:ring-[#758064]/15 motion-reduce:transition-none">
           <label className="min-w-0 text-[10px] font-medium uppercase tracking-wide text-[#919387]">Min<InputNumber aria-label="Minimum price in PKR" min={0} placeholder="0" value={filters.minPrice ? Number(filters.minPrice) : null} onChange={(value) => dispatch(setMinPrice(value == null ? "" : String(value)))} className="filter-price w-full" controls={false} /></label>
           <label className="min-w-0 border-l border-[#eceae3] pl-2 text-[10px] font-medium uppercase tracking-wide text-[#919387]">Max<InputNumber aria-label="Maximum price in PKR" min={0} placeholder="Any" value={filters.maxPrice ? Number(filters.maxPrice) : null} onChange={(value) => dispatch(setMaxPrice(value == null ? "" : String(value)))} className="filter-price w-full" controls={false} /></label>
         </div>
         {priceRangeInvalid && <p role="alert" className="mt-2 text-xs text-[#a14d42]">Maximum price must be at least the minimum price.</p>}
       </div>
-      <div className="py-5">
-        <label htmlFor="product-brand" className="mb-2.5 block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Brand</label>
+      <div className="py-3">
+        <label htmlFor="product-brand" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Brand</label>
         <Input id="product-brand" allowClear placeholder="Any brand" value={filters.brand} onChange={(event) => dispatch(setBrand(event.target.value))} className="filter-control" />
       </div>
-      <div className="py-5">
-        <label htmlFor="product-tag" className="mb-2.5 block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Tag</label>
+      <div className="py-3">
+        <label htmlFor="product-tag" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Tag</label>
         <Input id="product-tag" allowClear placeholder="Any tag" value={filters.tag} onChange={(event) => dispatch(setTag(event.target.value))} className="filter-control" />
       </div>
-      <div className="space-y-4 pt-5">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Availability & offers</p>
-        <label className="flex cursor-pointer items-center justify-between gap-3 text-sm text-[#4e5347]">In stock <Switch checked={filters.inStock} onChange={(value) => dispatch(setInStock(value))} className="filter-switch" /></label>
-        <label className="flex cursor-pointer items-center justify-between gap-3 text-sm text-[#4e5347]">Discounted <Switch checked={filters.discounted} onChange={(value) => dispatch(setDiscounted(value))} className="filter-switch" /></label>
+      <div className="space-y-2.5 pt-3">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Availability & offers</p>
+        <label className="flex min-h-8 cursor-pointer items-center justify-between gap-3 text-[13px] text-[#4e5347]">In stock <Switch checked={filters.inStock} onChange={(value) => dispatch(setInStock(value))} className="filter-switch" /></label>
+        <label className="flex min-h-8 cursor-pointer items-center justify-between gap-3 text-[13px] text-[#4e5347]">Discounted <Switch checked={filters.discounted} onChange={(value) => dispatch(setDiscounted(value))} className="filter-switch" /></label>
       </div>
     </div>
   );
 
   return (
-    <div className="shop-page min-h-screen bg-[#fbfaf7] [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_img]:cursor-pointer [&_.filter-control.ant-input-affix-wrapper]:!h-10 [&_.filter-control.ant-input-affix-wrapper]:!rounded-lg [&_.filter-control.ant-input-affix-wrapper]:!border-[#e4e3da] [&_.filter-control.ant-input-affix-wrapper]:!bg-white/75 [&_.filter-control.ant-input-affix-wrapper]:!px-3 [&_.filter-control.ant-input-affix-wrapper]:!shadow-none [&_.filter-control.ant-input-affix-wrapper:hover]:!border-[#b9bfad] [&_.filter-control.ant-input-affix-wrapper-focused]:!border-[#899579] [&_.filter-control.ant-input-affix-wrapper-focused]:!ring-2 [&_.filter-control.ant-input-affix-wrapper-focused]:!ring-[#758064]/15 [&_.filter-control.ant-input]:!text-sm [&_.filter-control.ant-input]:placeholder:!text-[#adafa5] [&_.filter-control.ant-select-selector]:!h-10 [&_.filter-control.ant-select-selector]:!items-center [&_.filter-control.ant-select-selector]:!rounded-lg [&_.filter-control.ant-select-selector]:!border-[#e4e3da] [&_.filter-control.ant-select-selector]:!bg-white/75 [&_.filter-control.ant-select-selector]:!shadow-none [&_.filter-control.ant-select-focused_.ant-select-selector]:!border-[#899579] [&_.filter-control.ant-select-focused_.ant-select-selector]:!ring-2 [&_.filter-control.ant-select-focused_.ant-select-selector]:!ring-[#758064]/15 [&_.filter-price.ant-input-number]:!h-8 [&_.filter-price.ant-input-number]:!border-0 [&_.filter-price.ant-input-number]:!bg-transparent [&_.filter-price.ant-input-number]:!shadow-none [&_.filter-price_.ant-input-number-input]:!px-0 [&_.filter-price_.ant-input-number-input]:!text-sm [&_.filter-switch.ant-switch-checked]:!bg-[#758064] [&_.filter-switch.ant-switch]:transition-colors [&_.filter-switch.ant-switch]:duration-200 [&_.filter-switch.ant-switch]:motion-reduce:!transition-none">
+    <div className="shop-page min-h-screen bg-[#fbfaf7] [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_img]:cursor-pointer [&_.filter-control.ant-input-affix-wrapper]:!h-9 [&_.filter-control.ant-input-affix-wrapper]:!rounded-lg [&_.filter-control.ant-input-affix-wrapper]:!border-[#e4e3da] [&_.filter-control.ant-input-affix-wrapper]:!bg-white/75 [&_.filter-control.ant-input-affix-wrapper]:!px-2.5 [&_.filter-control.ant-input-affix-wrapper]:!shadow-none [&_.filter-control.ant-input-affix-wrapper:hover]:!border-[#b9bfad] [&_.filter-control.ant-input-affix-wrapper-focused]:!border-[#899579] [&_.filter-control.ant-input-affix-wrapper-focused]:!ring-2 [&_.filter-control.ant-input-affix-wrapper-focused]:!ring-[#758064]/15 [&_.filter-control.ant-input]:!text-[13px] [&_.filter-control.ant-input]:placeholder:!text-[#adafa5] [&_.filter-control.ant-select-selector]:!h-9 [&_.filter-control.ant-select-selector]:!items-center [&_.filter-control.ant-select-selector]:!rounded-lg [&_.filter-control.ant-select-selector]:!border-[#e4e3da] [&_.filter-control.ant-select-selector]:!bg-white/75 [&_.filter-control.ant-select-selector]:!shadow-none [&_.filter-control.ant-select-focused_.ant-select-selector]:!border-[#899579] [&_.filter-control.ant-select-focused_.ant-select-selector]:!ring-2 [&_.filter-control.ant-select-focused_.ant-select-selector]:!ring-[#758064]/15 [&_.filter-price.ant-input-number]:!h-7 [&_.filter-price.ant-input-number]:!border-0 [&_.filter-price.ant-input-number]:!bg-transparent [&_.filter-price.ant-input-number]:!shadow-none [&_.filter-price_.ant-input-number-input]:!px-0 [&_.filter-price_.ant-input-number-input]:!text-[13px] [&_.filter-switch.ant-switch-checked]:!bg-[#758064] [&_.filter-switch.ant-switch]:transition-colors [&_.filter-switch.ant-switch]:duration-200 [&_.filter-switch.ant-switch]:motion-reduce:!transition-none">
       <main className="mx-auto max-w-7xl px-5 pb-12 pt-5 sm:pt-6">
 
 
         <div className="grid items-start gap-8 lg:grid-cols-[230px_minmax(0,1fr)] xl:gap-10">
-          <aside aria-label="Product filters" className="sticky top-24 hidden max-h-[calc(100vh-7rem)] self-start overflow-y-auto overscroll-contain rounded-xl border border-[#e7e5dc] bg-white/65 p-5 [scrollbar-color:#c7cabc_transparent] [scrollbar-width:thin] lg:block">
-            <div className="mb-4 flex items-center justify-between border-b border-[#eae8e0] pb-4">
-              <h2 className="flex items-center gap-2 font-serif text-xl text-[#303429]"><SlidersHorizontal size={16} strokeWidth={1.7} className="text-[#758064]" />Filters</h2>
+          <aside aria-label="Product filters" className="sticky top-24 hidden max-h-[calc(100vh-7rem)] self-start overflow-y-auto overscroll-contain rounded-xl border border-[#e7e5dc] bg-white/65 p-4 [scrollbar-color:#c7cabc_transparent] [scrollbar-width:thin] lg:block">
+            <div className="mb-2.5 flex items-center justify-between border-b border-[#eae8e0] pb-2.5">
+              <h2 className="flex items-center gap-1.5 font-serif text-lg text-[#303429]"><SlidersHorizontal size={14} strokeWidth={1.7} className="text-[#758064]" />Filters</h2>
               <Button type="text" size="small" onClick={clearFilters} disabled={activeFilters.length === 0} className="!h-auto !px-1 !text-xs !text-[#7a806d] hover:!text-[#4f5b40] disabled:!text-[#b2b3aa]">Clear all</Button>
             </div>
             {filterControls}
@@ -149,9 +149,9 @@ export default function ShopPage() {
             {priceRangeInvalid && <Alert className="mb-5" type="warning" showIcon title="Check your price range" description="Adjust the minimum or maximum price to see matching products." />}
             {productsQuery.isError && !page && <Alert className="mb-5" type="error" showIcon title="We couldn’t load the collection" description="Please check your connection and try again." action={<Button onClick={() => productsQuery.refetch()}>Retry</Button>} />}
             {productsQuery.isLoading && !page ? (
-              <div className="grid gap-x-3 gap-y-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">{Array.from({ length: 10 }, (_, index) => <Card key={index} className="!border-0 !bg-transparent !p-0 !shadow-none"><Skeleton.Image active className="!h-auto !aspect-[4/4.2] !w-full" /><Skeleton active title={{ width: "68%" }} paragraph={{ rows: 1, width: "45%" }} className="mt-2" /></Card>)}</div>
+              <div className="grid grid-cols-3 gap-x-2 gap-y-4 sm:gap-x-3 sm:gap-y-5 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">{Array.from({ length: 10 }, (_, index) => <Card key={index} className="!border-0 !bg-transparent !p-0 !shadow-none"><Skeleton.Image active className="!h-auto !aspect-[4/4.2] !w-full" /><Skeleton active title={{ width: "68%" }} paragraph={{ rows: 1, width: "45%" }} className="mt-2" /></Card>)}</div>
             ) : page?.items.length ? <>
-              <div aria-live="polite" className={`grid gap-x-3 gap-y-5 transition-opacity duration-200 motion-reduce:transition-none sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 ${productsQuery.isFetching ? "opacity-70" : "opacity-100"}`}>
+              <div aria-live="polite" className={`grid grid-cols-3 gap-x-2 gap-y-4 transition-opacity duration-200 motion-reduce:transition-none sm:gap-x-3 sm:gap-y-5 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 ${productsQuery.isFetching ? "opacity-70" : "opacity-100"}`}>
                 {page.items.map((product) => <article key={product._id} className="group relative min-w-0">
                   <Link href={`/products/${product.slug}`} className="block text-inherit outline-none focus-visible:ring-2 focus-visible:ring-[#758064] focus-visible:ring-offset-4">
                   <div className="relative aspect-[4/4.2] overflow-hidden bg-[#efeee8]">
@@ -196,9 +196,9 @@ export default function ShopPage() {
           closeIcon={<X size={18} />}
           footer={<div className="flex items-center justify-between gap-3"><Button type="text" onClick={clearFilters} disabled={activeFilters.length === 0} className="!text-[#737a66]">Clear all</Button><Button type="primary" className="flex-1 !h-10 !bg-[#758064]" onClick={() => setMobileFiltersOpen(false)}>Show {page?.pagination.total ?? ""} results</Button></div>}
           className="filter-drawer lg:!hidden"
-          styles={{ header: { borderBottom: "1px solid #eae8e0", padding: "18px 20px" }, body: { padding: "18px 20px 0" }, footer: { borderTop: "1px solid #eae8e0", padding: "12px 20px max(12px, env(safe-area-inset-bottom))" } }}
+          styles={{ header: { borderBottom: "1px solid #eae8e0", padding: "14px 18px" }, body: { padding: "12px 18px 0" }, footer: { borderTop: "1px solid #eae8e0", padding: "10px 18px max(10px, env(safe-area-inset-bottom))" } }}
         >
-          <div className="max-h-[calc(100dvh-190px)] overflow-y-auto px-1 pb-6">{filterControls}</div>
+          <div className="max-h-[calc(100dvh-155px)] overflow-y-auto px-1 pb-8">{filterControls}</div>
         </Drawer>
       </main>
     </div>

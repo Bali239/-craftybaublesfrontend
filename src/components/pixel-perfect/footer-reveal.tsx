@@ -9,7 +9,7 @@ type FooterRevealProps = { children: ReactNode };
 /** Renders the store footer directly after the page content. */
 export default function FooterReveal({ children }: FooterRevealProps) {
   const pathname = usePathname();
-  const hideFooter = pathname === "/admin" || pathname.startsWith("/admin/") || pathname === "/cart" || pathname.startsWith("/products/");
+  const hideFooter = pathname !== "/";
 
   if (hideFooter) {
     return <div className="w-full bg-[#fbfaf7]">{children}</div>;
