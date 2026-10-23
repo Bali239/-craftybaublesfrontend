@@ -5,8 +5,8 @@ import "./globals.css";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
-  title: "Naqash Corner | Thoughtfully chosen",
-  description: "Discover thoughtfully chosen products at Naqash Corner.",
+  title: "NaqshCorner | Thoughtfully chosen",
+  description: "Discover thoughtfully chosen products at NaqshCorner.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

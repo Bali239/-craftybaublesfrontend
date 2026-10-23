@@ -60,6 +60,6 @@ export default function Home() {
         </> : <div className="rounded-xl border border-dashed border-[#dcdcd2] bg-white/50 py-16"><Empty description="No products match those filters." /><div className="mt-5 text-center"><Button onClick={() => { dispatch(setSearch("")); dispatch(setCategory("")); dispatch(setInStock(false)); dispatch(setDiscounted(false)); dispatch(setMinPrice("")); dispatch(setMaxPrice("")); dispatch(setBrand("")); dispatch(setTag("")); }}>Clear filters</Button></div></div>}
       </section>
     </main>
-    <footer className="border-t border-[#e8e6de] py-7 text-center text-xs text-[#94958a]">Naqash Corner · Thoughtfully made for what matters.</footer>
+    <footer className="border-t border-[#e8e6de] py-7 text-center text-xs text-[#94958a]">NaqshCorner · Thoughtfully made for what matters.</footer>
   </div>;
 }

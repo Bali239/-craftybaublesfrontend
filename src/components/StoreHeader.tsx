@@ -45,7 +45,7 @@ export default function StoreHeader() {
   };
   return <header className="sticky top-0 z-20 border-b border-[#e8e6de] bg-[#fbfaf7]/95 backdrop-blur">
     <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-      <Link href="/" className="font-serif text-xl text-[#303429]">Naqash <span className="text-[#9b805d]">Corner</span></Link>
+      <Link href="/" className="font-serif text-xl text-[#303429]">NaqshCorner</Link>
       <nav className="flex items-center gap-3 text-sm">
         <Link href="/cart" className="px-2 text-[#53594c] hover:text-[#8a7051]">Cart</Link>
         {user?.role === "admin" && <Link href="/admin" className="px-2 text-[#53594c]">Manage store</Link>}
