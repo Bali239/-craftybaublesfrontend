@@ -37,6 +37,7 @@ export type Product = {
   attributes?: { name: string; value: string }[];
 };
 export type ProductPage = { items: Product[]; pagination: { page: number; limit: number; total: number; pages: number } };
+export type WishlistPage = ProductPage;
 export type Order = { orderNumber: string; status: string; paymentStatus: string; items: { name: string; quantity: number; lineTotalMinor: number }[]; currency: string; subtotalMinor: number; totalMinor: number };
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
