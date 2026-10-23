@@ -27,15 +27,24 @@ export default function ShopPage() {
   const queryClient = useQueryClient();
   const filters = useSelector((state: RootState) => state.catalog);
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search);
+  const [debouncedBrand, setDebouncedBrand] = useState(filters.brand);
+  const [debouncedTag, setDebouncedTag] = useState(filters.tag);
   const [categorySearch, setCategorySearch] = useState("");
   const [debouncedCategorySearch, setDebouncedCategorySearch] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const priceRangeInvalid = Boolean(filters.minPrice && filters.maxPrice && Number(filters.minPrice) > Number(filters.maxPrice));
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 350);
+    const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 500);
     return () => window.clearTimeout(timer);
   }, [filters.search]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedBrand(filters.brand.trim());
+      setDebouncedTag(filters.tag.trim());
+    }, 500);
+    return () => window.clearTimeout(timer);
+  }, [filters.brand, filters.tag]);
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedCategorySearch(categorySearch.trim()), 500);
     return () => window.clearTimeout(timer);
@@ -49,10 +58,10 @@ export default function ShopPage() {
     if (filters.discounted) search.set("discounted", "true");
     if (!priceRangeInvalid && filters.minPrice && Number(filters.minPrice) >= 0) search.set("minPrice", String(Math.round(Number(filters.minPrice) * 100)));
     if (!priceRangeInvalid && filters.maxPrice && Number(filters.maxPrice) >= 0) search.set("maxPrice", String(Math.round(Number(filters.maxPrice) * 100)));
-    if (filters.brand.trim()) search.set("brand", filters.brand.trim());
-    if (filters.tag.trim()) search.set("tag", filters.tag.trim());
+    if (debouncedBrand) search.set("brand", debouncedBrand);
+    if (debouncedTag) search.set("tag", debouncedTag);
     return search.toString();
-  }, [filters.page, filters.sort, filters.category, filters.inStock, filters.discounted, filters.minPrice, filters.maxPrice, filters.brand, filters.tag, debouncedSearch, priceRangeInvalid]);
+  }, [filters.page, filters.sort, filters.category, filters.inStock, filters.discounted, filters.minPrice, filters.maxPrice, debouncedSearch, debouncedBrand, debouncedTag, priceRangeInvalid]);
 
   const productsQuery = useQuery({
     queryKey: queryKeys.products.list(params),

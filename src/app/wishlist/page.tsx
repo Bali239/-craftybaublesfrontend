@@ -27,6 +27,8 @@ export default function WishlistPage() {
   const client = useQueryClient();
   const [signedIn, setSignedIn] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search);
+  const [debouncedBrand, setDebouncedBrand] = useState(filters.brand);
+  const [debouncedTag, setDebouncedTag] = useState(filters.tag);
   const [categorySearch, setCategorySearch] = useState("");
   const [debouncedCategorySearch, setDebouncedCategorySearch] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -37,9 +39,16 @@ export default function WishlistPage() {
     return () => window.clearTimeout(timer);
   }, []);
   useEffect(() => {
-    const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 350);
+    const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 500);
     return () => window.clearTimeout(timer);
   }, [filters.search]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedBrand(filters.brand.trim());
+      setDebouncedTag(filters.tag.trim());
+    }, 500);
+    return () => window.clearTimeout(timer);
+  }, [filters.brand, filters.tag]);
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedCategorySearch(categorySearch.trim()), 500);
     return () => window.clearTimeout(timer);
@@ -49,14 +58,14 @@ export default function WishlistPage() {
     const query = new URLSearchParams({ page: String(filters.page), limit: "12", sort: filters.sort });
     if (debouncedSearch) query.set("q", debouncedSearch);
     if (filters.category) query.set("category", filters.category);
-    if (filters.brand.trim()) query.set("brand", filters.brand.trim());
-    if (filters.tag.trim()) query.set("tag", filters.tag.trim());
+    if (debouncedBrand) query.set("brand", debouncedBrand);
+    if (debouncedTag) query.set("tag", debouncedTag);
     if (!priceRangeInvalid && filters.minPrice) query.set("minPrice", String(Math.round(Number(filters.minPrice) * 100)));
     if (!priceRangeInvalid && filters.maxPrice) query.set("maxPrice", String(Math.round(Number(filters.maxPrice) * 100)));
     if (filters.inStock) query.set("inStock", "true");
     if (filters.discounted) query.set("discounted", "true");
     return query.toString();
-  }, [filters.page, filters.sort, filters.category, filters.brand, filters.tag, filters.minPrice, filters.maxPrice, filters.inStock, filters.discounted, debouncedSearch, priceRangeInvalid]);
+  }, [filters.page, filters.sort, filters.category, filters.minPrice, filters.maxPrice, filters.inStock, filters.discounted, debouncedSearch, debouncedBrand, debouncedTag, priceRangeInvalid]);
   const wishlist = useQuery({ queryKey: ["wishlist", "page", params], queryFn: () => api<WishlistPage>(`/api/wishlist?${params}`), enabled: signedIn });
   const products = useMemo(() => wishlist.data?.items || [], [wishlist.data?.items]);
   const pagination = wishlist.data?.pagination;
