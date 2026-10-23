@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert, App, Button, InputNumber, Skeleton, Tag } from "antd";
 import StoreHeader from "../../../components/StoreHeader";
 import { api, formatPrice, type Product } from "../../../lib/api";
+import { queryKeys } from "../../../lib/queryKeys";
 import { readSession } from "../../../lib/session";
 import GoogleSignInButton from "../../../components/GoogleSignInButton";
 
@@ -20,7 +21,7 @@ export default function ProductDetailPage() {
   const [signedIn, setSignedIn] = useState(false);
   useEffect(() => { const task = window.setTimeout(() => setSignedIn(Boolean(readSession())), 0); return () => window.clearTimeout(task); }, []);
   const client = useQueryClient();
-  const productQuery = useQuery({ queryKey: ["product", id], queryFn: () => api<Product>(`/api/products/${encodeURIComponent(id)}`) });
+  const productQuery = useQuery({ queryKey: queryKeys.products.detail(id), queryFn: () => api<Product>(`/api/products/${encodeURIComponent(id)}`) });
   const addMutation = useMutation({ mutationFn: () => api("/api/cart/items", { method: "POST", body: JSON.stringify({ productId: productQuery.data?._id, quantity }) }), onSuccess: () => { message.success("Added to your cart."); client.invalidateQueries({ queryKey: ["cart"] }); }, onError: (error: Error) => message.error(error.message) });
   const product = productQuery.data;
   return <div className="min-h-screen bg-[#fbfaf7]"><StoreHeader /><main className="mx-auto max-w-6xl px-5 py-8">

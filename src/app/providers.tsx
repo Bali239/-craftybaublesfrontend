@@ -8,7 +8,7 @@ import { store } from "../store/store";
 import { useState } from "react";
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } }));
+  const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { staleTime: 5 * 60_000, gcTime: 30 * 60_000, retry: 1 } } }));
   return (
     <Provider store={store}><QueryClientProvider client={queryClient}><ConfigProvider theme={{ token: { colorPrimary: "#758064", colorText: "#252820", borderRadius: 10, fontFamily: "Arial, Helvetica, sans-serif" } }}><App>{children}</App></ConfigProvider></QueryClientProvider></Provider>
   );

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Card, Empty, Input, InputNumber, Pagination, Select, Skeleton, Switch, Tag } from "antd";
 import StoreHeader from "../components/StoreHeader";
 import { api, formatPrice, type Category, type ProductPage } from "../lib/api";
+import { queryKeys } from "../lib/queryKeys";
 import { setBrand, setCategory, setDiscounted, setInStock, setMaxPrice, setMinPrice, setPage, setSearch, setSort, setTag, type AppDispatch, type RootState } from "../store/store";
 
 export default function Home() {
@@ -27,8 +28,8 @@ export default function Home() {
     if (filters.tag.trim()) search.set("tag", filters.tag.trim());
     return search.toString();
   }, [filters.page, filters.sort, filters.category, filters.inStock, filters.discounted, filters.minPrice, filters.maxPrice, filters.brand, filters.tag, debouncedSearch]);
-  const productsQuery = useQuery({ queryKey: ["products", params], queryFn: () => api<ProductPage>(`/api/products?${params}`) });
-  const categoriesQuery = useQuery({ queryKey: ["categories"], queryFn: () => api<Category[]>("/api/categories") });
+  const productsQuery = useQuery({ queryKey: queryKeys.products.list(params), queryFn: () => api<ProductPage>(`/api/products?${params}`) });
+  const categoriesQuery = useQuery({ queryKey: queryKeys.categories.list, queryFn: () => api<Category[]>("/api/categories") });
   const page = productsQuery.data;
   return <div className="min-h-screen bg-[#fbfaf7]">
     <StoreHeader />
