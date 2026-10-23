@@ -27,6 +27,8 @@ export default function WishlistPage() {
   const client = useQueryClient();
   const [signedIn, setSignedIn] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search);
+  const [categorySearch, setCategorySearch] = useState("");
+  const [debouncedCategorySearch, setDebouncedCategorySearch] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const priceRangeInvalid = Boolean(filters.minPrice && filters.maxPrice && Number(filters.minPrice) > Number(filters.maxPrice));
 
@@ -38,6 +40,10 @@ export default function WishlistPage() {
     const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 350);
     return () => window.clearTimeout(timer);
   }, [filters.search]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedCategorySearch(categorySearch.trim()), 500);
+    return () => window.clearTimeout(timer);
+  }, [categorySearch]);
 
   const params = useMemo(() => {
     const query = new URLSearchParams({ page: String(filters.page), limit: "12", sort: filters.sort });
@@ -55,7 +61,7 @@ export default function WishlistPage() {
   const products = useMemo(() => wishlist.data?.items || [], [wishlist.data?.items]);
   const pagination = wishlist.data?.pagination;
   const total = pagination?.total || 0;
-  const categories = useMemo(() => [...new Map(products.flatMap((product) => product.category ? [[product.category.slug, product.category] as const] : []).map(([slug, category]) => [slug, category])).values()], [products]);
+  const categoriesQuery = useQuery({ queryKey: ["categories", "list", debouncedCategorySearch], queryFn: () => api<{ _id: string; name: string; slug: string }[]>(`/api/categories${debouncedCategorySearch ? `?q=${encodeURIComponent(debouncedCategorySearch)}` : ""}`), enabled: signedIn });
   const productCountLabel = `${total} ${total === 1 ? "saved piece" : "saved pieces"}`;
 
   const clearFilters = () => {
@@ -71,7 +77,7 @@ export default function WishlistPage() {
 
   const filterControls = <div className="space-y-0 divide-y divide-[#eae8e0]">
     <div className="pb-3"><label htmlFor="wishlist-search" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Search saved items</label><Input id="wishlist-search" allowClear placeholder="Search wishlist…" value={filters.search} onChange={(event) => dispatch(setSearch(event.target.value))} className="wishlist-filter-control" /></div>
-    <div className="py-3"><label htmlFor="wishlist-category" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Category</label><Select id="wishlist-category" className="wishlist-filter-control w-full" value={filters.category || ""} onChange={(value) => dispatch(setCategory(value))} options={[{ value: "", label: "All categories" }, ...categories.map((category) => ({ value: category.slug, label: category.name }))]} /></div>
+    <div className="py-3"><label htmlFor="wishlist-category" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Category</label><Select id="wishlist-category" showSearch filterOption={false} onSearch={setCategorySearch} searchValue={categorySearch} notFoundContent={categoriesQuery.isFetching ? "Searching…" : "No matching categories"} className="wishlist-filter-control w-full" value={filters.category || ""} onChange={(value) => { dispatch(setCategory(value)); setCategorySearch(""); }} options={[{ value: "", label: "All categories" }, ...(categoriesQuery.data || []).map((category) => ({ value: category.slug, label: category.name }))]} /></div>
     <div className="py-3"><p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Price range <span className="font-normal normal-case tracking-normal text-[#999b91]">(PKR)</span></p><div className="grid grid-cols-2 gap-1.5 rounded-lg border border-[#e4e3da] bg-white/70 p-1.5 focus-within:border-[#9ca58b] focus-within:ring-2 focus-within:ring-[#758064]/15"><label className="min-w-0 text-[10px] font-medium uppercase tracking-wide text-[#919387]">Min<InputNumber aria-label="Minimum wishlist price in PKR" min={0} placeholder="0" value={filters.minPrice ? Number(filters.minPrice) : null} onChange={(value) => dispatch(setMinPrice(value == null ? "" : String(value)))} className="wishlist-filter-price w-full" controls={false} /></label><label className="min-w-0 border-l border-[#eceae3] pl-2 text-[10px] font-medium uppercase tracking-wide text-[#919387]">Max<InputNumber aria-label="Maximum wishlist price in PKR" min={0} placeholder="Any" value={filters.maxPrice ? Number(filters.maxPrice) : null} onChange={(value) => dispatch(setMaxPrice(value == null ? "" : String(value)))} className="wishlist-filter-price w-full" controls={false} /></label></div>{priceRangeInvalid && <p role="alert" className="mt-2 text-xs text-[#a14d42]">Maximum price must be at least the minimum price.</p>}</div>
     <div className="py-3"><label htmlFor="wishlist-brand" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Brand</label><Input id="wishlist-brand" allowClear placeholder="Any brand" value={filters.brand} onChange={(event) => dispatch(setBrand(event.target.value))} className="wishlist-filter-control" /></div>
     <div className="py-3"><label htmlFor="wishlist-tag" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Tag</label><Input id="wishlist-tag" allowClear placeholder="Any tag" value={filters.tag} onChange={(event) => dispatch(setTag(event.target.value))} className="wishlist-filter-control" /></div>

@@ -27,6 +27,8 @@ export default function ShopPage() {
   const queryClient = useQueryClient();
   const filters = useSelector((state: RootState) => state.catalog);
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search);
+  const [categorySearch, setCategorySearch] = useState("");
+  const [debouncedCategorySearch, setDebouncedCategorySearch] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const priceRangeInvalid = Boolean(filters.minPrice && filters.maxPrice && Number(filters.minPrice) > Number(filters.maxPrice));
 
@@ -34,6 +36,10 @@ export default function ShopPage() {
     const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 350);
     return () => window.clearTimeout(timer);
   }, [filters.search]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedCategorySearch(categorySearch.trim()), 500);
+    return () => window.clearTimeout(timer);
+  }, [categorySearch]);
 
   const params = useMemo(() => {
     const search = new URLSearchParams({ page: String(filters.page), limit: "12", sort: filters.sort });
@@ -53,8 +59,8 @@ export default function ShopPage() {
     queryFn: () => api<ProductPage>(`/api/products?${params}`),
   });
   const categoriesQuery = useQuery({
-    queryKey: queryKeys.categories.list,
-    queryFn: () => api<Category[]>("/api/categories"),
+    queryKey: [...queryKeys.categories.list, debouncedCategorySearch],
+    queryFn: () => api<Category[]>(`/api/categories${debouncedCategorySearch ? `?q=${encodeURIComponent(debouncedCategorySearch)}` : ""}`),
   });
   const page = productsQuery.data;
   const addToCart = useMutation({
@@ -93,7 +99,7 @@ export default function ShopPage() {
       </div>
       <div className="py-3">
         <label htmlFor="product-category" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Category</label>
-        <Select id="product-category" className="filter-control w-full" value={filters.category || ""} onChange={(value) => dispatch(setCategory(value))} options={[{ value: "", label: "All categories" }, ...(categoriesQuery.data || []).map((category) => ({ value: category.slug, label: category.name }))]} />
+        <Select id="product-category" showSearch filterOption={false} onSearch={setCategorySearch} searchValue={categorySearch} notFoundContent={categoriesQuery.isFetching ? "Searching…" : "No matching categories"} className="filter-control w-full" value={filters.category || ""} onChange={(value) => { dispatch(setCategory(value)); setCategorySearch(""); }} options={[{ value: "", label: "All categories" }, ...(categoriesQuery.data || []).map((category) => ({ value: category.slug, label: category.name }))]} />
       </div>
       <div className="py-3">
         <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Price range <span className="font-normal normal-case tracking-normal text-[#999b91]">(PKR)</span></p>
