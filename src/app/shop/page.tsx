@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -23,7 +24,7 @@ const sortOptions = [
   { value: "name_asc", label: "Name: A to Z" },
 ];
 
-export default function ShopPage() {
+function ShopContent() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -232,5 +233,13 @@ export default function ShopPage() {
         </Drawer>
       </main>
     </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<main className="mx-auto min-h-screen max-w-7xl px-5 pt-8" aria-label="Loading shop"><p className="text-sm text-[#77796e]">Loading collection…</p></main>}>
+      <ShopContent />
+    </Suspense>
   );
 }
