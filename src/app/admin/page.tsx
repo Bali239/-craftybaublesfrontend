@@ -92,7 +92,12 @@ export default function AdminPage() {
     dispatch(setSearch("")); dispatch(setCategory("")); dispatch(setMinPrice("")); dispatch(setMaxPrice("")); dispatch(setBrand("")); dispatch(setTag("")); dispatch(setInStock(false)); dispatch(setDiscounted(false)); dispatch(setPage(1)); dispatch(setSort("newest"));
   };
   const activeCount = Number(Boolean(debouncedSearch)) + Number(Boolean(filters.category)) + Number(Boolean(filters.minPrice)) + Number(Boolean(filters.maxPrice)) + Number(Boolean(debouncedBrand)) + Number(Boolean(debouncedTag)) + Number(filters.inStock) + Number(filters.discounted) + Number(Boolean(filters.status));
-  const openEdit = (product: Product) => { setEditing(product); setFiles([]); form.setFieldsValue({ name: product.name, description: product.description, shortDescription: product.shortDescription, categoryId: product.category?._id, brand: product.brand, sku: product.sku, price: product.priceMinor / 100, discountPercent: product.discountPercent, availablePieces: product.availablePieces, status: product.status as ProductForm["status"] }); };
+  const openEdit = (product: Product) => { setFiles([]); setEditing(product); setCreateOpen(false); };
+  useEffect(() => {
+    if (editing) form.setFieldsValue({ name: editing.name, description: editing.description, shortDescription: editing.shortDescription, categoryId: editing.category?._id, brand: editing.brand, sku: editing.sku, price: editing.priceMinor / 100, discountPercent: editing.discountPercent, availablePieces: editing.availablePieces, status: editing.status as ProductForm["status"] });
+    else if (createOpen) form.resetFields();
+  }, [editing, createOpen, form]);
+  useEffect(() => { if (categoryCreateOpen) categoryForm.resetFields(); }, [categoryCreateOpen, categoryForm]);
   const categoryOptions = [{ value: "", label: "All categories" }, ...(categories.data || []).map((category) => ({ value: category.slug, label: category.name }))];
 
   const filterControls = <div className="space-y-4">
@@ -118,7 +123,7 @@ export default function AdminPage() {
 
   return <div className="min-h-screen bg-[#fbfaf7]"><main className="mx-auto max-w-7xl px-4 py-6 sm:px-5 sm:py-8"><p className="text-[10px] font-bold tracking-[0.2em] text-[#858978]">STORE ADMINISTRATION</p><h1 className="mb-6 mt-2 font-serif text-3xl text-[#303429] sm:mb-8 sm:text-4xl">Manage your store</h1>
     {!authorized ? <Alert type="warning" showIcon title="Admin access required" description="Sign in with an email listed in the server ADMIN_EMAILS setting." /> : <div className="w-full"><section className="min-w-0 space-y-6">
-      <div className="rounded-xl border border-[#e7e5dc] bg-white p-4 sm:p-5"><div className="mb-4 flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-serif text-2xl text-[#303429]">Products</h2><p className="mt-1 text-xs text-[#858978]">{products.data?.pagination.total ?? 0} catalog products</p></div><div className="flex flex-wrap gap-2"><Select aria-label="Sort products" value={filters.sort} onChange={(value) => dispatch(setSort(value))} options={sortOptions} className="w-40" /><Button className="lg:!hidden" icon={<SlidersHorizontal size={15} />} onClick={() => setMobileFiltersOpen(true)}>Filters{activeCount ? ` · ${activeCount}` : ""}</Button><Button onClick={() => { categoryForm.resetFields(); setCategoryCreateOpen(true); }}>Add category</Button><Button type="primary" onClick={() => { setEditing(null); setFiles([]); form.resetFields(); setCreateOpen(true); }}>Add product</Button></div></div>
+      <div className="rounded-xl border border-[#e7e5dc] bg-white p-4 sm:p-5"><div className="mb-4 flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-serif text-2xl text-[#303429]">Products</h2><p className="mt-1 text-xs text-[#858978]">{products.data?.pagination.total ?? 0} catalog products</p></div><div className="flex flex-wrap gap-2"><Select aria-label="Sort products" value={filters.sort} onChange={(value) => dispatch(setSort(value))} options={sortOptions} className="w-40" /><Button className="lg:!hidden" icon={<SlidersHorizontal size={15} />} onClick={() => setMobileFiltersOpen(true)}>Filters{activeCount ? ` · ${activeCount}` : ""}</Button><Button onClick={() => setCategoryCreateOpen(true)}>Add category</Button><Button type="primary" onClick={() => { setEditing(null); setFiles([]); setCreateOpen(true); }}>Add product</Button></div></div>
         <div className="grid items-start gap-6 lg:grid-cols-[210px_minmax(0,1fr)]"><aside aria-label="Product filters" className="sticky top-24 hidden max-h-[calc(100vh-7rem)] self-start overflow-y-auto rounded-lg border border-[#e8e6de] bg-[#fbfaf7] p-4 lg:block"><div className="mb-3 flex justify-between"><h3 className="font-serif text-lg text-[#303429]">Refine</h3><Button type="text" size="small" disabled={!activeCount} onClick={clearFilters}>Clear</Button></div>{filterControls}</aside>
           <div className="min-w-0">
             {priceRangeInvalid && <Alert className="mb-3" type="warning" showIcon title="Adjust the price range" />}
@@ -128,8 +133,8 @@ export default function AdminPage() {
         </div>
       </div>
     </section></div>}
-    <Modal title={editing ? `Edit ${editing.name}` : "Add a product"} open={createOpen || Boolean(editing)} forceRender onCancel={() => { setCreateOpen(false); setEditing(null); setFiles([]); }} footer={null} destroyOnHidden width={760} className="max-w-[calc(100vw-24px)]">{productForm}</Modal>
-    <Modal title="Add a category" open={categoryCreateOpen} forceRender onCancel={() => setCategoryCreateOpen(false)} footer={null} destroyOnHidden width={480} className="max-w-[calc(100vw-24px)]">
+    <Modal title={editing ? `Edit ${editing.name}` : "Add a product"} open={createOpen || Boolean(editing)} onCancel={() => { setCreateOpen(false); setEditing(null); setFiles([]); }} footer={null} width={760} className="max-w-[calc(100vw-24px)]">{productForm}</Modal>
+    <Modal title="Add a category" open={categoryCreateOpen} onCancel={() => setCategoryCreateOpen(false)} footer={null} width={480} className="max-w-[calc(100vw-24px)]">
       <Form form={categoryForm} layout="vertical" onFinish={(values) => addCategory.mutate(values)}>
         <Form.Item name="name" label="Category name" rules={[{ required: true, min: 2, max: 100, whitespace: true }]}><Input placeholder="e.g. Home décor" maxLength={100} showCount /></Form.Item>
         <Form.Item name="description" label="Description" rules={[{ max: 1000 }]}><Input.TextArea placeholder="A short description (optional)" rows={4} maxLength={1000} showCount /></Form.Item>
