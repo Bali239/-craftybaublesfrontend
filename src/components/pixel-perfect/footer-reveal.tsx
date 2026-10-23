@@ -20,7 +20,7 @@ export default function FooterReveal({ children }: FooterRevealProps) {
       <div className="bg-[#fbfaf7]">{children}</div>
 
       <footer className="flex min-h-[360px] items-end bg-[#303429] text-[#fbfaf7] sm:min-h-[390px]">
-        <div className="mx-auto w-full max-w-7xl px-5 pb-7 sm:pb-9 ">
+        <div className="mx-auto w-full max-w-7xl px-5 pt-16 pb-7 sm:pt-20 sm:pb-9">
           <div className="grid gap-10 border-b border-white/15 pb-10 sm:grid-cols-[1.4fr_0.6fr] sm:gap-8">
             <div className="max-w-lg">
               <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#c6c8b8]">
