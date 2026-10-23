@@ -18,7 +18,10 @@ type WishlistButtonProps = {
 export default function WishlistButton({ productId, productName, showLabel = false, className = "" }: WishlistButtonProps) {
   const client = useQueryClient();
   const [signedIn, setSignedIn] = useState(false);
-  useEffect(() => setSignedIn(Boolean(readSession())), []);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSignedIn(Boolean(readSession())), 0);
+    return () => window.clearTimeout(timer);
+  }, []);
   const wishlist = useQuery({ queryKey: ["wishlist"], queryFn: () => api<Product[]>("/api/wishlist"), enabled: signedIn });
   const saved = wishlist.data?.some((product) => product._id === productId) || false;
   const toggle = useMutation({

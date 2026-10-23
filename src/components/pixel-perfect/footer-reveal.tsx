@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 
 type FooterRevealProps = { children: ReactNode };
 
-/** Keeps the store footer behind the page content so it is uncovered as the page scrolls away. */
+/** Renders the store footer directly after the page content. */
 export default function FooterReveal({ children }: FooterRevealProps) {
   const pathname = usePathname();
   const hideFooter = pathname === "/admin" || pathname.startsWith("/admin/") || pathname === "/cart" || pathname.startsWith("/products/");
@@ -16,11 +16,11 @@ export default function FooterReveal({ children }: FooterRevealProps) {
   }
 
   return (
-    <div className="relative isolate w-full [&_a]:cursor-pointer">
-      <div className="relative z-10 bg-[#fbfaf7]">{children}</div>
+    <div className="w-full [&_a]:cursor-pointer">
+      <div className="bg-[#fbfaf7]">{children}</div>
 
-      <footer className="sticky bottom-0 z-0 flex min-h-[360px] items-end bg-[#303429] text-[#fbfaf7] sm:min-h-[390px]">
-        <div className="mx-auto w-full max-w-7xl px-5 pb-7 pt-12 sm:pb-9 sm:pt-14">
+      <footer className="flex min-h-[360px] items-end bg-[#303429] text-[#fbfaf7] sm:min-h-[390px]">
+        <div className="mx-auto w-full max-w-7xl px-5 pb-7 sm:pb-9 ">
           <div className="grid gap-10 border-b border-white/15 pb-10 sm:grid-cols-[1.4fr_0.6fr] sm:gap-8">
             <div className="max-w-lg">
               <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#c6c8b8]">
