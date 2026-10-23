@@ -1,7 +1,7 @@
 import { configureStore, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-type CatalogState = { search: string; category: string; sort: string; page: number; inStock: boolean; discounted: boolean; minPrice: string; maxPrice: string; brand: string; tag: string };
-const initialState: CatalogState = { search: "", category: "", sort: "newest", page: 1, inStock: false, discounted: false, minPrice: "", maxPrice: "", brand: "", tag: "" };
+type CatalogState = { search: string; category: string; sort: string; page: number; inStock: boolean; discounted: boolean; minPrice: string; maxPrice: string; brand: string; tag: string; status: string };
+const initialState: CatalogState = { search: "", category: "", sort: "newest", page: 1, inStock: false, discounted: false, minPrice: "", maxPrice: "", brand: "", tag: "", status: "" };
 const catalogSlice = createSlice({
   name: "catalog",
   initialState,
@@ -16,9 +16,10 @@ const catalogSlice = createSlice({
     setMaxPrice(state, action: PayloadAction<string>) { state.maxPrice = action.payload; state.page = 1; },
     setBrand(state, action: PayloadAction<string>) { state.brand = action.payload; state.page = 1; },
     setTag(state, action: PayloadAction<string>) { state.tag = action.payload; state.page = 1; },
+    setStatus(state, action: PayloadAction<string>) { state.status = action.payload; state.page = 1; },
   },
 });
-export const { setSearch, setCategory, setSort, setPage, setInStock, setDiscounted, setMinPrice, setMaxPrice, setBrand, setTag } = catalogSlice.actions;
+export const { setSearch, setCategory, setSort, setPage, setInStock, setDiscounted, setMinPrice, setMaxPrice, setBrand, setTag, setStatus } = catalogSlice.actions;
 export const store = configureStore({ reducer: { catalog: catalogSlice.reducer } });
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
