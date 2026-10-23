@@ -24,14 +24,14 @@ export default function Home() {
   const groups = categories.data || [];
 
   return (
-    <main className="home-page bg-[#fbfaf7] text-[#252820]">
+    <main className="overflow-clip bg-[#fbfaf7] text-[#252820] [&_a:focus-visible]:outline [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4 [&_a:focus-visible]:outline-[#78846b]">
       <section className="relative isolate mx-auto grid min-h-[650px] max-w-[1600px] overflow-hidden bg-[#e9e8df] md:min-h-[680px] md:grid-cols-[0.88fr_1.12fr]">
         <div className="relative z-10 flex flex-col justify-center px-6 py-16 sm:px-12 md:px-16 lg:px-24">
-          <p className="home-eyebrow">NaqshCorner · Thoughtfully chosen</p>
+          <p className="text-[10px] font-semibold tracking-[0.19em] text-[#78806d] uppercase">NaqshCorner · Thoughtfully chosen</p>
           <h1 className="mt-6 max-w-xl font-serif text-[clamp(3rem,6vw,5.8rem)] leading-[0.98] tracking-[-0.045em]">A softer rhythm for everyday living.</h1>
           <p className="mt-6 max-w-md text-base leading-7 text-[#66695f] sm:text-lg">Considered pieces for your wardrobe, home, and the small rituals in between.</p>
           <div className="mt-9 flex flex-wrap items-center gap-5">
-            <Link href="/shop" className="home-button">Shop now <ArrowRight size={16} /></Link>
+            <Link href="/shop" className="inline-flex min-h-12 items-center gap-5 rounded-full bg-[#30352c] px-5 text-[13px] font-semibold text-[#fbfaf7] transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-[#59624f] motion-reduce:transition-none">Shop now <ArrowRight size={16} /></Link>
             <Link href="#categories" className="text-sm font-medium text-[#4c5145] underline decoration-[#aab09c] underline-offset-4 transition-colors hover:text-[#78846b]">Explore the edit</Link>
           </div>
           <p className="mt-16 hidden text-[10px] uppercase tracking-[0.22em] text-[#878a7f] md:block">Useful things, chosen with care</p>
@@ -45,7 +45,7 @@ export default function Home() {
 
       <section id="categories" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
         <div className="flex items-end justify-between gap-4">
-          <div><p className="home-eyebrow">Find your kind of everyday</p><h2 className="home-heading">Shop by category</h2></div>
+          <div><p className="text-[10px] font-semibold tracking-[0.19em] text-[#78806d] uppercase">Find your kind of everyday</p><h2 className="mt-2.5 font-serif text-[clamp(2rem,3vw,3rem)] leading-[1.06] tracking-[-0.035em]">Shop by category</h2></div>
           <Link href="/shop" className="hidden items-center gap-2 pb-1 text-sm text-[#62675a] transition-colors hover:text-[#252820] sm:flex">View everything <ArrowUpRight size={15} /></Link>
         </div>
         <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-3 sm:gap-6 lg:grid-cols-5">
@@ -64,7 +64,7 @@ export default function Home() {
       <section id="featured" className="bg-[#f1f0e9]">
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
           <div className="flex items-end justify-between gap-4">
-            <div><p className="home-eyebrow">Freshly found</p><h2 className="home-heading">A few new favorites</h2></div>
+            <div><p className="text-[10px] font-semibold tracking-[0.19em] text-[#78806d] uppercase">Freshly found</p><h2 className="mt-2.5 font-serif text-[clamp(2rem,3vw,3rem)] leading-[1.06] tracking-[-0.035em]">A few new favorites</h2></div>
             <Link href="/shop?sort=newest" className="flex items-center gap-2 pb-1 text-sm text-[#62675a] transition-colors hover:text-[#252820]">Shop all <ArrowUpRight size={15} /></Link>
           </div>
           {products.isLoading ? <div className="mt-9 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6" aria-label="Loading new arrivals">{[0,1,2,3].map((item) => <div key={item} className="aspect-[0.8] animate-pulse bg-[#e7e6df]" />)}</div> : products.data?.items.length ? <div className="mt-9 grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4 md:gap-6">
@@ -83,7 +83,7 @@ export default function Home() {
 
       <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
         <div className="relative overflow-hidden bg-[#dfe2d7] px-7 py-12 sm:px-14 sm:py-16 lg:px-20">
-          <div className="relative z-10 max-w-xl"><p className="home-eyebrow">The everyday edit</p><h2 className="mt-4 font-serif text-4xl leading-tight tracking-[-0.035em] sm:text-5xl">Small details. A more considered home.</h2><p className="mt-4 max-w-md text-sm leading-6 text-[#66695f]">Discover useful accents and familiar comforts, selected to bring a little more intention to daily life.</p><Link href="/shop?category=home-decor" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold">Explore home decor <ArrowRight size={16} /></Link></div>
+          <div className="relative z-10 max-w-xl"><p className="text-[10px] font-semibold tracking-[0.19em] text-[#78806d] uppercase">The everyday edit</p><h2 className="mt-4 font-serif text-4xl leading-tight tracking-[-0.035em] sm:text-5xl">Small details. A more considered home.</h2><p className="mt-4 max-w-md text-sm leading-6 text-[#66695f]">Discover useful accents and familiar comforts, selected to bring a little more intention to daily life.</p><Link href="/shop?category=home-decor" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold">Explore home decor <ArrowRight size={16} /></Link></div>
           <div className="absolute -right-4 top-0 hidden h-full w-[43%] sm:block"><Image src={photo("photo-1494438639946-1ebd1d20bf85", 900)} alt="Natural textures and considered home details" fill sizes="40vw" className="object-cover" /></div>
         </div>
       </section>
@@ -97,7 +97,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
         <div className="grid items-center gap-9 md:grid-cols-[0.85fr_1.15fr] md:gap-16">
           <div className="relative aspect-[1.15] overflow-hidden bg-[#e8e7df]"><Image src={photo("photo-1600210492486-724fe5c67fb0", 1100)} alt="A calm, lived-in interior with natural materials" fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover" /></div>
-          <div className="max-w-xl"><p className="home-eyebrow">A little about us</p><h2 className="home-heading !mt-4">Thoughtfully chosen, for the way you live.</h2><p className="mt-5 text-base leading-7 text-[#686b62]">NaqshCorner brings together considered pieces for everyday living—from home and personal style to small daily rituals. A simple place to find things that feel useful, familiar, and right for you.</p><Link href="/shop" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold">Get to know the collection <ArrowRight size={16} /></Link></div>
+          <div className="max-w-xl"><p className="text-[10px] font-semibold tracking-[0.19em] text-[#78806d] uppercase">A little about us</p><h2 className="mt-4 font-serif text-[clamp(2rem,3vw,3rem)] leading-[1.06] tracking-[-0.035em]">Thoughtfully chosen, for the way you live.</h2><p className="mt-5 text-base leading-7 text-[#686b62]">NaqshCorner brings together considered pieces for everyday living—from home and personal style to small daily rituals. A simple place to find things that feel useful, familiar, and right for you.</p><Link href="/shop" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold">Get to know the collection <ArrowRight size={16} /></Link></div>
         </div>
       </section>
     </main>

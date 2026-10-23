@@ -23,6 +23,6 @@ export default function Providers({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, []);
   return (
-      <Provider store={store}><QueryClientProvider client={queryClient}><ConfigProvider theme={{ token: { colorPrimary: "#758064", colorText: "#252820", borderRadius: 10, fontFamily: "Arial, Helvetica, sans-serif" } }}>{children}<Toaster position="top-right" /></ConfigProvider></QueryClientProvider></Provider>
+      <Provider store={store}><QueryClientProvider client={queryClient}><ConfigProvider theme={{ token: { colorPrimary: "#758064", colorText: "#252820", borderRadius: 10, fontFamily: "Arial, Helvetica, sans-serif" } }}>{children}<Toaster position="top-right" className="!left-3 !right-3 !top-[max(0.75rem,env(safe-area-inset-top))] !w-auto sm:!left-auto sm:!right-4 sm:!top-4 sm:!w-[min(24rem,calc(100vw-2rem))]" toastOptions={{ className: "!min-h-[3.25rem] !w-full !max-w-none !rounded-xl !border !border-border !bg-background !px-3.5 !py-3 !text-sm !leading-snug !text-foreground !shadow-lg sm:!px-4" }} /></ConfigProvider></QueryClientProvider></Provider>
   );
 }
