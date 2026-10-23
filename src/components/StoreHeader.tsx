@@ -91,7 +91,7 @@ export default function StoreHeader() {
   return (
     <>
     <div aria-hidden="true" className="h-16 sm:h-[76px]" />
-    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-2 py-3 sm:py-4">
+    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-2 py-3 sm:py-4 [&_a]:cursor-pointer">
       <nav aria-label="Primary" className="w-fit max-w-full rounded-full bg-[#17191d] p-1.5 shadow-lg shadow-black/15">
         <LayoutGroup id="store-nav-active-pill">
           <div className="flex w-max max-w-full items-center justify-center gap-0.5">

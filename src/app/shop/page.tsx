@@ -98,7 +98,7 @@ export default function ShopPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#fbfaf7]">
+    <div className="min-h-screen bg-[#fbfaf7] [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_img]:cursor-pointer">
       <main className="mx-auto max-w-7xl px-5 pb-16 pt-10">
 
 

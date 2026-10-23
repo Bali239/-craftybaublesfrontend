@@ -16,7 +16,7 @@ export default function FooterReveal({ children }: FooterRevealProps) {
   }
 
   return (
-    <div className="relative isolate w-full">
+    <div className="relative isolate w-full [&_a]:cursor-pointer">
       <div className="relative z-10 bg-[#fbfaf7]">{children}</div>
 
       <footer className="sticky bottom-0 z-0 flex min-h-[360px] items-end bg-[#303429] text-[#fbfaf7] sm:min-h-[390px]">

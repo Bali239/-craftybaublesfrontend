@@ -58,7 +58,7 @@ export default function CartPage() {
   const cart = cartQuery.data;
   const updatePending = changeQuantity.isPending || removeItem.isPending;
 
-  return <div className="min-h-screen bg-[#fbfaf7]">
+  return <div className="min-h-screen bg-[#fbfaf7] [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_img]:cursor-pointer">
     <main className="mx-auto max-w-6xl px-5 pb-8 sm:pb-10">
       <Link href="/shop" className="inline-flex items-center gap-2 text-sm text-[#737866] transition-colors hover:text-[#303429]"><ArrowLeft size={16} /> Continue shopping</Link>
       <div className="mt-6 flex flex-wrap items-end justify-between gap-3 border-b border-[#e8e6de] pb-6">

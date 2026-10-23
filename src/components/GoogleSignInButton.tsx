@@ -14,5 +14,5 @@ export default function GoogleSignInButton(props: GoogleSignInButtonProps) {
     window.location.assign(authorizationUrl.toString());
   };
 
-  return <Button {...props} href={`${API_URL}/api/auth/google`} onClick={beginSignIn} />;
+  return <Button {...props} className={`cursor-pointer disabled:cursor-not-allowed ${props.className || ""}`} href={`${API_URL}/api/auth/google`} onClick={beginSignIn} />;
 }

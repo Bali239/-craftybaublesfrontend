@@ -151,7 +151,7 @@ const CoverFlowCarousel = ({ products }: { products: Product[] }) => {
                   }
                   moved.current = 0;
                 }}
-                className="block"
+                className="block cursor-pointer"
               >
                 <div className="relative overflow-hidden rounded-md bg-[#efeee8] ring-1 ring-black/10" style={{ width: C.cw, height: C.ch }}>
                   {product.images[0]?.secureUrl ? (

@@ -6,19 +6,22 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
 import { Alert, Button, InputNumber, Skeleton, Tag } from "antd";
 import { toast } from "sonner";
 import { api, formatPrice, type Product } from "../../../lib/api";
 import { queryKeys } from "../../../lib/queryKeys";
 import { readSession } from "../../../lib/session";
+import { setCategory, type AppDispatch } from "../../../store/store";
 import GoogleSignInButton from "../../../components/GoogleSignInButton";
 
 export default function ProductDetailPage() {
   const params = useParams<{ identifier: string }>();
   const id = decodeURIComponent(params.identifier);
+  const dispatch = useDispatch<AppDispatch>();
   const [quantity, setQuantity] = useState(1);
-  const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
-  const [failedImageIds, setFailedImageIds] = useState<string[]>([]);
+  const [selection, setSelection] = useState<{ productId: string; imageId: string } | null>(null);
+  const [failedImageState, setFailedImageState] = useState<{ productId: string; ids: string[] } | null>(null);
   const [signedIn, setSignedIn] = useState(false);
   useEffect(() => { const task = window.setTimeout(() => setSignedIn(Boolean(readSession())), 0); return () => window.clearTimeout(task); }, []);
   const client = useQueryClient();
@@ -32,30 +35,29 @@ export default function ProductDetailPage() {
     });
   }, onSuccess: async () => { await client.invalidateQueries({ queryKey: ["cart"] }); toast.success("Added to your cart."); }, onError: (error: Error) => toast.error(error.message) });
   const product = productQuery.data;
+  const selectedImageId = selection && selection.productId === product?._id ? selection.imageId : null;
+  const failedImageIds = failedImageState && failedImageState.productId === product?._id ? failedImageState.ids : [];
   const validImages = (product?.images || []).filter((image) => image.secureUrl && !failedImageIds.includes(image._id));
   const selectedImage = validImages.find((image) => image._id === selectedImageId) || validImages[0];
-
-  useEffect(() => {
-    setFailedImageIds([]);
-    setSelectedImageId(product?.images.find((image) => image.secureUrl)?._id || null);
-  }, [product?._id, product?.images]);
-
-  useEffect(() => {
-    if (selectedImageId && !validImages.some((image) => image._id === selectedImageId)) {
-      setSelectedImageId(validImages[0]?._id || null);
-    }
-  }, [selectedImageId, validImages]);
-  return <div className="min-h-screen bg-[#fbfaf7]"><main className="mx-auto max-w-6xl px-5 py-8">
-    <Link href="/" className="text-sm text-[#7c806f]">← Back to collection</Link>
-    {productQuery.isLoading ? <div className="mt-8 grid gap-10 md:grid-cols-2"><Skeleton.Image active className="!h-[520px] !w-full" /><Skeleton active /></div> : productQuery.error ? <Alert className="mt-8" type="error" showIcon title={(productQuery.error as Error).message} /> : product && <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-14">
+  return <div className="min-h-screen bg-[#fbfaf7] [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_img]:cursor-pointer"><main className="mx-auto max-w-6xl px-5 pb-8">
+    {productQuery.isLoading ? <div className="mt-8 grid gap-10 md:grid-cols-2"><Skeleton.Image active className="!h-[520px] !w-full" /><Skeleton active /></div> : productQuery.error ? <Alert className="mt-8" type="error" showIcon title={(productQuery.error as Error).message} /> : product && <>
+      <nav aria-label="Breadcrumb">
+        <ol className="flex flex-wrap items-center gap-2 text-sm text-[#858978]">
+          <li><Link href="/shop" className="transition-colors hover:text-[#303429]">Shop</Link></li>
+          {product.category?.name && <><li aria-hidden="true" className="text-[#b5b6ac]">/</li><li><Link href="/shop" onClick={() => dispatch(setCategory(product.category.slug))} className="transition-colors hover:text-[#303429]">{product.category.name}</Link></li></>}
+          <li aria-hidden="true" className="text-[#b5b6ac]">/</li>
+          <li aria-current="page" className="max-w-[60vw] truncate font-medium text-[#454a3e]">{product.name}</li>
+        </ol>
+      </nav>
+      <div className="mt-6 grid gap-8 md:grid-cols-2 md:gap-14">
       <div className="flex min-w-0 flex-col gap-3 md:flex-row">
         {validImages.length > 1 && <div className="order-2 flex max-w-full gap-2 overflow-x-auto md:order-1 md:max-h-[560px] md:flex-col md:overflow-x-hidden md:overflow-y-auto">
-          {validImages.map((image) => <button key={image._id} type="button" aria-label={`View ${image.altText || product.name}`} aria-pressed={selectedImage?._id === image._id} onClick={() => setSelectedImageId(image._id)} className={`relative size-16 shrink-0 overflow-hidden rounded-lg border-2 bg-[#efeee8] transition-colors md:size-[76px] ${selectedImage?._id === image._id ? "border-[#697457]" : "border-transparent hover:border-[#c6c9bb]"}`}>
-            <Image fill sizes="76px" className="object-contain p-1" src={image.secureUrl} alt={image.altText || product.name} onError={() => setFailedImageIds((current) => current.includes(image._id) ? current : [...current, image._id])} />
+          {validImages.map((image) => <button key={image._id} type="button" aria-label={`View ${image.altText || product.name}`} aria-pressed={selectedImage?._id === image._id} onClick={() => setSelection({ productId: product._id, imageId: image._id })} className={`relative size-16 shrink-0 overflow-hidden rounded-lg border-2 bg-[#efeee8] transition-colors md:size-[76px] ${selectedImage?._id === image._id ? "border-[#697457]" : "border-transparent hover:border-[#c6c9bb]"}`}>
+            <Image fill sizes="76px" className="object-contain p-1" src={image.secureUrl} alt={image.altText || product.name} onError={() => setFailedImageState((current) => { const ids = current?.productId === product._id ? current.ids : []; return ids.includes(image._id) ? current : { productId: product._id, ids: [...ids, image._id] }; })} />
           </button>)}
         </div>}
-        <div className="relative order-1 aspect-square w-full overflow-hidden rounded-xl bg-[#efeee8] md:order-2 md:min-w-0 md:flex-1">
-          {selectedImage ? <Image key={selectedImage._id} fill priority sizes="(max-width: 768px) 100vw, 50vw" className="object-contain" src={selectedImage.secureUrl} alt={selectedImage.altText || product.name} onError={() => setFailedImageIds((current) => current.includes(selectedImage._id) ? current : [...current, selectedImage._id])} /> : <div className="grid size-full place-items-center font-serif text-6xl text-[#b3b5a9]">N.</div>}
+        <div className="relative order-1 aspect-square w-full overflow-hidden rounded-xl md:order-2 md:min-w-0 md:flex-1">
+          {selectedImage ? <Image key={selectedImage._id} fill priority sizes="(max-width: 768px) 100vw, 50vw" className="object-contain" src={selectedImage.secureUrl} alt={selectedImage.altText || product.name} onError={() => setFailedImageState((current) => { const ids = current?.productId === product._id ? current.ids : []; return ids.includes(selectedImage._id) ? current : { productId: product._id, ids: [...ids, selectedImage._id] }; })} /> : <div className="grid size-full place-items-center font-serif text-6xl text-[#b3b5a9]">N.</div>}
         </div>
       </div>
       <div className="pt-2 md:pt-8"><p className="text-xs uppercase tracking-[0.18em] text-[#858978]">{product.category?.name || "Collection"}</p><h1 className="mt-3 font-serif text-4xl text-[#303429]">{product.name}</h1>{product.brand && <p className="mt-2 text-sm text-[#85877d]">{product.brand}</p>}<div className="mt-5 flex items-center gap-3">{product.discountPercent > 0 && <Tag color="red">Save {product.discountPercent}%</Tag>}<p className="text-xl font-semibold text-[#4e5941]">{formatPrice(product.salePriceMinor, product.currency)}</p>{product.discountPercent > 0 && <p className="text-sm text-[#99998f] line-through">{formatPrice(product.priceMinor, product.currency)}</p>}</div>
@@ -72,6 +74,6 @@ export default function ProductDetailPage() {
         }}>Add to cart</Button></div>
         {!signedIn && <GoogleSignInButton type="link" className="mt-2 !px-0">Sign in with Google to shop</GoogleSignInButton>}
       </div>
-    </div>}
+    </div></>}
   </main></div>;
 }
