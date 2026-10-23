@@ -9,7 +9,7 @@ type FooterRevealProps = { children: ReactNode };
 /** Keeps the store footer behind the page content so it is uncovered as the page scrolls away. */
 export default function FooterReveal({ children }: FooterRevealProps) {
   const pathname = usePathname();
-  const hideFooter = pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/products/");
+  const hideFooter = pathname === "/admin" || pathname.startsWith("/admin/") || pathname === "/cart" || pathname.startsWith("/products/");
 
   if (hideFooter) {
     return <div className="w-full bg-[#fbfaf7]">{children}</div>;
