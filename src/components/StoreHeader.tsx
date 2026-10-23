@@ -4,12 +4,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LayoutGroup, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { App } from "antd";
+import { toast } from "sonner";
 import { API_URL, api } from "../lib/api";
 import { clearSession, readSession, saveSession, type StoreUser } from "../lib/session";
 
 export default function StoreHeader() {
-  const { message } = App.useApp();
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<StoreUser | null>(null);
@@ -22,13 +21,13 @@ export default function StoreHeader() {
       try {
         const session = JSON.parse(handoff);
         if (session.token && Date.parse(session.expiresAt) > Date.now()) saveSession(session);
-      } catch { message.error("Sign-in response could not be read."); }
+      } catch { toast.error("Sign-in response could not be read."); }
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
     }
 
     const authError = new URLSearchParams(window.location.search).get("auth_error");
     if (authError) {
-      message.error(authError);
+      toast.error(authError);
       const search = new URLSearchParams(window.location.search);
       search.delete("auth_error");
       const query = search.toString();
@@ -47,7 +46,7 @@ export default function StoreHeader() {
       if (!cancelled) setUser(null);
     });
     return () => { cancelled = true; };
-  }, [message]);
+  }, []);
 
   const activeKey = pathname === "/admin"
     ? "admin"
@@ -90,7 +89,9 @@ export default function StoreHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-20 flex justify-center px-2 py-3 sm:py-4">
+    <>
+    <div aria-hidden="true" className="h-16 sm:h-[76px]" />
+    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-2 py-3 sm:py-4">
       <nav aria-label="Primary" className="w-fit max-w-full rounded-full bg-[#17191d] p-1.5 shadow-lg shadow-black/15">
         <LayoutGroup id="store-nav-active-pill">
           <div className="flex w-max max-w-full items-center justify-center gap-0.5">
@@ -118,5 +119,6 @@ export default function StoreHeader() {
         </LayoutGroup>
       </nav>
     </header>
+    </>
   );
 }
