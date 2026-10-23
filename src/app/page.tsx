@@ -25,7 +25,7 @@ export default function Home() {
 
   return (
     <main className="overflow-clip bg-[#fbfaf7] text-[#252820] [&_a:focus-visible]:outline [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4 [&_a:focus-visible]:outline-[#78846b]">
-      <section className="relative isolate mx-auto grid min-h-[650px] max-w-[1600px] overflow-hidden bg-[#e9e8df] md:min-h-[680px] md:grid-cols-[0.88fr_1.12fr]">
+      <section className="relative isolate mx-auto grid min-h-[650px] max-w-[1600px] overflow-hidden bg-[#fbfaf7] md:min-h-[680px] md:grid-cols-[0.88fr_1.12fr]">
         <div className="relative z-10 flex flex-col justify-center px-6 py-16 sm:px-12 md:px-16 lg:px-24">
           <p className="text-[10px] font-semibold tracking-[0.19em] text-[#78806d] uppercase">NaqshCorner · Thoughtfully chosen</p>
           <h1 className="mt-6 max-w-xl font-serif text-[clamp(3rem,6vw,5.8rem)] leading-[0.98] tracking-[-0.045em]">A softer rhythm for everyday living.</h1>
@@ -38,7 +38,7 @@ export default function Home() {
         </div>
         <div className="relative min-h-[390px] md:min-h-full">
           <Image src={photo("photo-1616486338812-3dadae4b4ace", 1500)} alt="Sunlit, thoughtfully styled living space" fill priority sizes="(max-width: 768px) 100vw, 58vw" className="object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent md:bg-gradient-to-r md:from-[#e9e8df]/20 md:via-transparent md:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent md:bg-gradient-to-r md:from-[#fbfaf7]/20 md:via-transparent md:to-transparent" />
           <span className="absolute bottom-5 right-6 text-[10px] uppercase tracking-[0.18em] text-white/85">Objects for slower moments</span>
         </div>
       </section>
