@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Card, Drawer, Empty, Input, InputNumber, Pagination, Select, Skeleton, Switch, Tag } from "antd";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, X } from "lucide-react";
 import { toast } from "sonner";
 import WishlistButton from "../../components/WishlistButton";
 import { api, formatPrice, type Category, type ProductPage } from "../../lib/api";
@@ -86,55 +86,58 @@ export default function ShopPage() {
   };
 
   const filterControls = (
-    <div className="space-y-5">
-      <div>
-        <label htmlFor="product-search" className="mb-2 block text-xs font-medium text-[#666b5e]">Search</label>
-        <Input id="product-search" allowClear placeholder="Search products…" value={filters.search} onChange={(event) => dispatch(setSearch(event.target.value))} />
+    <div className="space-y-0 divide-y divide-[#eae8e0]">
+      <div className="pb-5">
+        <label htmlFor="product-search" className="mb-2.5 block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Search</label>
+        <Input id="product-search" allowClear placeholder="Search products…" value={filters.search} onChange={(event) => dispatch(setSearch(event.target.value))} className="filter-control" />
       </div>
-      <div>
-        <label htmlFor="product-category" className="mb-2 block text-xs font-medium text-[#666b5e]">Category</label>
-        <Select id="product-category" className="w-full" value={filters.category || ""} onChange={(value) => dispatch(setCategory(value))} options={[{ value: "", label: "All categories" }, ...(categoriesQuery.data || []).map((category) => ({ value: category.slug, label: category.name }))]} />
+      <div className="py-5">
+        <label htmlFor="product-category" className="mb-2.5 block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Category</label>
+        <Select id="product-category" className="filter-control w-full" value={filters.category || ""} onChange={(value) => dispatch(setCategory(value))} options={[{ value: "", label: "All categories" }, ...(categoriesQuery.data || []).map((category) => ({ value: category.slug, label: category.name }))]} />
       </div>
-      <div>
-        <p className="mb-2 text-xs font-medium text-[#666b5e]">Price (PKR)</p>
-        <div className="grid grid-cols-2 gap-2">
-          <InputNumber aria-label="Minimum price in PKR" min={0} placeholder="Min" value={filters.minPrice ? Number(filters.minPrice) : null} onChange={(value) => dispatch(setMinPrice(value == null ? "" : String(value)))} className="!w-full" />
-          <InputNumber aria-label="Maximum price in PKR" min={0} placeholder="Max" value={filters.maxPrice ? Number(filters.maxPrice) : null} onChange={(value) => dispatch(setMaxPrice(value == null ? "" : String(value)))} className="!w-full" />
+      <div className="py-5">
+        <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Price range <span className="font-normal normal-case tracking-normal text-[#999b91]">(PKR)</span></p>
+        <div className="grid grid-cols-2 gap-2 rounded-lg border border-[#e4e3da] bg-white/70 p-2 transition-colors focus-within:border-[#9ca58b] focus-within:ring-2 focus-within:ring-[#758064]/15 motion-reduce:transition-none">
+          <label className="min-w-0 text-[10px] font-medium uppercase tracking-wide text-[#919387]">Min<InputNumber aria-label="Minimum price in PKR" min={0} placeholder="0" value={filters.minPrice ? Number(filters.minPrice) : null} onChange={(value) => dispatch(setMinPrice(value == null ? "" : String(value)))} className="filter-price w-full" controls={false} /></label>
+          <label className="min-w-0 border-l border-[#eceae3] pl-2 text-[10px] font-medium uppercase tracking-wide text-[#919387]">Max<InputNumber aria-label="Maximum price in PKR" min={0} placeholder="Any" value={filters.maxPrice ? Number(filters.maxPrice) : null} onChange={(value) => dispatch(setMaxPrice(value == null ? "" : String(value)))} className="filter-price w-full" controls={false} /></label>
         </div>
         {priceRangeInvalid && <p role="alert" className="mt-2 text-xs text-[#a14d42]">Maximum price must be at least the minimum price.</p>}
       </div>
-      <div>
-        <label htmlFor="product-brand" className="mb-2 block text-xs font-medium text-[#666b5e]">Brand</label>
-        <Input id="product-brand" allowClear placeholder="Brand" value={filters.brand} onChange={(event) => dispatch(setBrand(event.target.value))} />
+      <div className="py-5">
+        <label htmlFor="product-brand" className="mb-2.5 block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Brand</label>
+        <Input id="product-brand" allowClear placeholder="Any brand" value={filters.brand} onChange={(event) => dispatch(setBrand(event.target.value))} className="filter-control" />
       </div>
-      <div>
-        <label htmlFor="product-tag" className="mb-2 block text-xs font-medium text-[#666b5e]">Tag</label>
-        <Input id="product-tag" allowClear placeholder="Tag" value={filters.tag} onChange={(event) => dispatch(setTag(event.target.value))} />
+      <div className="py-5">
+        <label htmlFor="product-tag" className="mb-2.5 block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Tag</label>
+        <Input id="product-tag" allowClear placeholder="Any tag" value={filters.tag} onChange={(event) => dispatch(setTag(event.target.value))} className="filter-control" />
       </div>
-      <div className="space-y-4 border-t border-[#eceae3] pt-4">
-        <label className="flex items-center justify-between gap-3 text-sm text-[#666b5e]">In stock <Switch checked={filters.inStock} onChange={(value) => dispatch(setInStock(value))} /></label>
-        <label className="flex items-center justify-between gap-3 text-sm text-[#666b5e]">Discounted <Switch checked={filters.discounted} onChange={(value) => dispatch(setDiscounted(value))} /></label>
+      <div className="space-y-4 pt-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#74796a]">Availability & offers</p>
+        <label className="flex cursor-pointer items-center justify-between gap-3 text-sm text-[#4e5347]">In stock <Switch checked={filters.inStock} onChange={(value) => dispatch(setInStock(value))} className="filter-switch" /></label>
+        <label className="flex cursor-pointer items-center justify-between gap-3 text-sm text-[#4e5347]">Discounted <Switch checked={filters.discounted} onChange={(value) => dispatch(setDiscounted(value))} className="filter-switch" /></label>
       </div>
-      <Button block onClick={clearFilters} disabled={activeFilters.length === 0}>Clear filters</Button>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#fbfaf7] [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_img]:cursor-pointer">
-      <main className="mx-auto max-w-7xl px-5 pb-16 pt-8 sm:pt-10">
+    <div className="shop-page min-h-screen bg-[#fbfaf7] [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_img]:cursor-pointer [&_.filter-control.ant-input-affix-wrapper]:!h-10 [&_.filter-control.ant-input-affix-wrapper]:!rounded-lg [&_.filter-control.ant-input-affix-wrapper]:!border-[#e4e3da] [&_.filter-control.ant-input-affix-wrapper]:!bg-white/75 [&_.filter-control.ant-input-affix-wrapper]:!px-3 [&_.filter-control.ant-input-affix-wrapper]:!shadow-none [&_.filter-control.ant-input-affix-wrapper:hover]:!border-[#b9bfad] [&_.filter-control.ant-input-affix-wrapper-focused]:!border-[#899579] [&_.filter-control.ant-input-affix-wrapper-focused]:!ring-2 [&_.filter-control.ant-input-affix-wrapper-focused]:!ring-[#758064]/15 [&_.filter-control.ant-input]:!text-sm [&_.filter-control.ant-input]:placeholder:!text-[#adafa5] [&_.filter-control.ant-select-selector]:!h-10 [&_.filter-control.ant-select-selector]:!items-center [&_.filter-control.ant-select-selector]:!rounded-lg [&_.filter-control.ant-select-selector]:!border-[#e4e3da] [&_.filter-control.ant-select-selector]:!bg-white/75 [&_.filter-control.ant-select-selector]:!shadow-none [&_.filter-control.ant-select-focused_.ant-select-selector]:!border-[#899579] [&_.filter-control.ant-select-focused_.ant-select-selector]:!ring-2 [&_.filter-control.ant-select-focused_.ant-select-selector]:!ring-[#758064]/15 [&_.filter-price.ant-input-number]:!h-8 [&_.filter-price.ant-input-number]:!border-0 [&_.filter-price.ant-input-number]:!bg-transparent [&_.filter-price.ant-input-number]:!shadow-none [&_.filter-price_.ant-input-number-input]:!px-0 [&_.filter-price_.ant-input-number-input]:!text-sm [&_.filter-switch.ant-switch-checked]:!bg-[#758064] [&_.filter-switch.ant-switch]:transition-colors [&_.filter-switch.ant-switch]:duration-200 [&_.filter-switch.ant-switch]:motion-reduce:!transition-none">
+      <main className="mx-auto max-w-7xl px-5 pb-12 pt-5 sm:pt-6">
 
 
         <div className="grid items-start gap-8 lg:grid-cols-[230px_minmax(0,1fr)] xl:gap-10">
-          <aside aria-label="Product filters" className="sticky top-24 hidden border-r border-[#e7e5dc] pr-6 lg:block">
-            <h2 className="mb-5 font-serif text-xl text-[#303429]">Refine</h2>
+          <aside aria-label="Product filters" className="sticky top-24 hidden max-h-[calc(100vh-7rem)] self-start overflow-y-auto overscroll-contain rounded-xl border border-[#e7e5dc] bg-white/65 p-5 [scrollbar-color:#c7cabc_transparent] [scrollbar-width:thin] lg:block">
+            <div className="mb-4 flex items-center justify-between border-b border-[#eae8e0] pb-4">
+              <h2 className="flex items-center gap-2 font-serif text-xl text-[#303429]"><SlidersHorizontal size={16} strokeWidth={1.7} className="text-[#758064]" />Filters</h2>
+              <Button type="text" size="small" onClick={clearFilters} disabled={activeFilters.length === 0} className="!h-auto !px-1 !text-xs !text-[#7a806d] hover:!text-[#4f5b40] disabled:!text-[#b2b3aa]">Clear all</Button>
+            </div>
             {filterControls}
           </aside>
 
           <section aria-label="Products" className="min-w-0">
-            <header className="mb-6 border-b border-[#e8e6de] pb-5">
+            <header className="mb-4 border-b border-[#e8e6de] pb-3">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#858978]">Thoughtfully chosen</p>
-              <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
-                <div><h1 className="font-serif text-3xl tracking-tight text-[#303429] sm:text-4xl">The collection</h1><p className="mt-1 text-sm text-[#77796e]">{page ? `${page.pagination.total} pieces to discover` : "Browse the collection"}</p></div>
+              <div className="mt-1.5 flex flex-wrap items-end justify-between gap-3">
+                <div><h1 className="font-serif text-2xl tracking-tight text-[#303429] sm:text-3xl">The collection</h1><p className="mt-0.5 text-xs text-[#77796e]">{page ? `${page.pagination.total} pieces to discover` : "Browse the collection"}</p></div>
               <div className="flex items-center gap-3">
                 <Button className="lg:!hidden" icon={<SlidersHorizontal size={15} />} onClick={() => setMobileFiltersOpen(true)}>Filters{activeFilters.length ? ` · ${activeFilters.length}` : ""}</Button>
                 <Select aria-label="Sort products" value={filters.sort} onChange={(value) => dispatch(setSort(value))} options={sortOptions} className="w-48" />
@@ -146,24 +149,24 @@ export default function ShopPage() {
             {priceRangeInvalid && <Alert className="mb-5" type="warning" showIcon title="Check your price range" description="Adjust the minimum or maximum price to see matching products." />}
             {productsQuery.isError && !page && <Alert className="mb-5" type="error" showIcon title="We couldn’t load the collection" description="Please check your connection and try again." action={<Button onClick={() => productsQuery.refetch()}>Retry</Button>} />}
             {productsQuery.isLoading && !page ? (
-              <div className="grid gap-x-5 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">{Array.from({ length: 6 }, (_, index) => <Card key={index} className="!border-0 !bg-transparent !p-0 !shadow-none"><Skeleton.Image active className="!h-auto !aspect-[4/4.5] !w-full" /><Skeleton active title={{ width: "68%" }} paragraph={{ rows: 1, width: "45%" }} className="mt-3" /></Card>)}</div>
+              <div className="grid gap-x-3 gap-y-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">{Array.from({ length: 10 }, (_, index) => <Card key={index} className="!border-0 !bg-transparent !p-0 !shadow-none"><Skeleton.Image active className="!h-auto !aspect-[4/4.2] !w-full" /><Skeleton active title={{ width: "68%" }} paragraph={{ rows: 1, width: "45%" }} className="mt-2" /></Card>)}</div>
             ) : page?.items.length ? <>
-              <div aria-live="polite" className={`grid gap-x-5 gap-y-9 transition-opacity duration-200 motion-reduce:transition-none sm:grid-cols-2 xl:grid-cols-3 ${productsQuery.isFetching ? "opacity-70" : "opacity-100"}`}>
+              <div aria-live="polite" className={`grid gap-x-3 gap-y-5 transition-opacity duration-200 motion-reduce:transition-none sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 ${productsQuery.isFetching ? "opacity-70" : "opacity-100"}`}>
                 {page.items.map((product) => <article key={product._id} className="group relative min-w-0">
                   <Link href={`/products/${product.slug}`} className="block text-inherit outline-none focus-visible:ring-2 focus-visible:ring-[#758064] focus-visible:ring-offset-4">
-                  <div className="relative aspect-[4/4.7] overflow-hidden bg-[#efeee8]">
-                    {product.images[0]?.secureUrl ? <Image fill sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) 44vw, (max-width: 1280px) 30vw, 25vw" src={product.images[0].secureUrl} alt={product.images[0].altText || product.name} className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025] motion-reduce:transform-none motion-reduce:transition-none" /> : <div className="grid size-full place-items-center font-serif text-5xl text-[#b3b5a9]">N.</div>}
-                    {product.discountPercent > 0 && <span className="absolute left-3 top-3 bg-[#fbfaf7] px-2.5 py-1 text-[10px] font-medium tracking-wide text-[#697457]">−{product.discountPercent}%</span>}
+                  <div className="relative aspect-[4/4.2] overflow-hidden bg-[#efeee8]">
+                    {product.images[0]?.secureUrl ? <Image fill sizes="(max-width: 640px) calc((100vw - 52px) / 2), (max-width: 768px) 30vw, (max-width: 1024px) 22vw, (max-width: 1536px) 18vw, 16vw" src={product.images[0].secureUrl} alt={product.images[0].altText || product.name} className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025] motion-reduce:transform-none motion-reduce:transition-none" /> : <div className="grid size-full place-items-center font-serif text-4xl text-[#b3b5a9]">N.</div>}
+                    {product.discountPercent > 0 && <span className="absolute left-2 top-2 bg-[#fbfaf7] px-2 py-0.5 text-[9px] font-medium tracking-wide text-[#697457]">−{product.discountPercent}%</span>}
                   </div>
                   <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex h-14 items-start justify-end p-2">
                     <div className="pointer-events-auto">
-                      <WishlistButton productId={product._id} productName={product.name} className="!relative !right-auto !top-auto !z-30 !size-9 !border-0 !bg-[#fbfaf7]/95 !text-[#4d5344] !shadow-none transition-colors hover:!bg-white hover:!text-rose-600 motion-reduce:transition-none" />
+                      <WishlistButton productId={product._id} productName={product.name} className="!relative !right-auto !top-auto !z-30 !size-8 !border-0 !bg-[#fbfaf7]/95 !text-[#4d5344] !shadow-none transition-colors hover:!bg-white hover:!text-rose-600 motion-reduce:transition-none" />
                     </div>
                   </div>
-                  <div className="flex flex-col pt-3">
-                    <p className="text-[10px] uppercase tracking-[0.14em] text-[#858978]">{product.category?.name || product.brand || "Collection"}</p>
-                    <h2 className="mt-1 line-clamp-2 text-sm leading-5 text-[#303429] transition-colors group-hover:text-[#697457]">{product.name}</h2>
-                    <div className="flex items-baseline gap-2"><p className="text-sm font-semibold text-[#3d4235]">{formatPrice(product.salePriceMinor, product.currency)}</p>{product.discountPercent > 0 && <p className="text-xs text-[#9a9a90] line-through">{formatPrice(product.priceMinor, product.currency)}</p>}</div>
+                  <div className="flex flex-col pt-2">
+                    <p className="text-[9px] uppercase tracking-[0.12em] text-[#858978]">{product.category?.name || product.brand || "Collection"}</p>
+                    <h2 className="mt-0.5 line-clamp-2 text-xs leading-4 text-[#303429] transition-colors group-hover:text-[#697457] sm:text-[13px]">{product.name}</h2>
+                    <div className="flex items-baseline gap-1.5"><p className="text-[13px] font-semibold text-[#3d4235]">{formatPrice(product.salePriceMinor, product.currency)}</p>{product.discountPercent > 0 && <p className="text-[10px] text-[#9a9a90] line-through">{formatPrice(product.priceMinor, product.currency)}</p>}</div>
                   </div>
                   </Link>
                   <Button
@@ -175,25 +178,27 @@ export default function ShopPage() {
                       if (!readSession()) { toast.info("Sign in first to add items to your cart."); return; }
                       addToCart.mutate(product._id);
                     }}
-                    className="mt-2 !h-9 !rounded-none !border-[#d9dbd0] !bg-transparent !text-xs !font-medium !tracking-wide !text-[#4d5344] transition-colors hover:!border-[#758064] hover:!bg-[#758064] hover:!text-white motion-reduce:transition-none"
+                    className="mt-1.5 !h-8 !rounded-none !border-[#d9dbd0] !bg-transparent !text-[11px] !font-medium !tracking-wide !text-[#4d5344] transition-colors hover:!border-[#758064] hover:!bg-[#758064] hover:!text-white motion-reduce:transition-none"
                   >{product.trackInventory && product.availablePieces < 1 ? "Out of stock" : "Add to cart"}</Button>
                 </article>)}
               </div>
-              <div className="mt-12 flex justify-center"><Pagination aria-label="Product pages" current={page.pagination.page} pageSize={page.pagination.limit} total={page.pagination.total} showSizeChanger={false} onChange={(value) => { dispatch(setPage(value)); window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); }} /></div>
+              <div className="mt-8 flex justify-center"><Pagination aria-label="Product pages" current={page.pagination.page} pageSize={page.pagination.limit} total={page.pagination.total} showSizeChanger={false} onChange={(value) => { dispatch(setPage(value)); window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); }} /></div>
             </> : !productsQuery.isError ? <div className="border-y border-[#e7e5dc] py-16 text-center"><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={<span className="text-[#77796e]">No pieces match these filters.</span>} /><Button type="primary" ghost onClick={clearFilters}>Clear filters</Button></div> : null}
           </section>
         </div>
 
         <Drawer
-          title="Filter products"
+          title={<span className="flex items-center gap-2 font-serif text-xl text-[#303429]"><SlidersHorizontal size={17} className="text-[#758064]" />Filters</span>}
           placement="left"
           size={360}
           open={mobileFiltersOpen}
           onClose={() => setMobileFiltersOpen(false)}
-          footer={<div className="flex items-center gap-3"><Button className="flex-1" onClick={clearFilters}>Clear</Button><Button type="primary" className="flex-[2]" onClick={() => setMobileFiltersOpen(false)}>Show {page?.pagination.total ?? ""} results</Button></div>}
-          className="lg:!hidden"
+          closeIcon={<X size={18} />}
+          footer={<div className="flex items-center justify-between gap-3"><Button type="text" onClick={clearFilters} disabled={activeFilters.length === 0} className="!text-[#737a66]">Clear all</Button><Button type="primary" className="flex-1 !h-10 !bg-[#758064]" onClick={() => setMobileFiltersOpen(false)}>Show {page?.pagination.total ?? ""} results</Button></div>}
+          className="filter-drawer lg:!hidden"
+          styles={{ header: { borderBottom: "1px solid #eae8e0", padding: "18px 20px" }, body: { padding: "18px 20px 0" }, footer: { borderTop: "1px solid #eae8e0", padding: "12px 20px max(12px, env(safe-area-inset-bottom))" } }}
         >
-          <div className="max-h-[calc(100dvh-150px)] overflow-y-auto px-1 pb-2">{filterControls}</div>
+          <div className="max-h-[calc(100dvh-190px)] overflow-y-auto px-1 pb-6">{filterControls}</div>
         </Drawer>
       </main>
     </div>
