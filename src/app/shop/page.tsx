@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Card, Drawer, Empty, Input, InputNumber, Pagination, Select, Skeleton, Switch, Tag } from "antd";
@@ -23,6 +24,10 @@ const sortOptions = [
 ];
 
 export default function ShopPage() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const appliedUrlCategory = useRef<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const queryClient = useQueryClient();
   const filters = useSelector((state: RootState) => state.catalog);
@@ -33,6 +38,16 @@ export default function ShopPage() {
   const [debouncedCategorySearch, setDebouncedCategorySearch] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const priceRangeInvalid = Boolean(filters.minPrice && filters.maxPrice && Number(filters.minPrice) > Number(filters.maxPrice));
+
+  // Category links from the homepage (and shared shop URLs) should override
+  // any category that was previously restored from local storage.
+  useEffect(() => {
+    const category = searchParams.get("category");
+    if (category !== null && category !== appliedUrlCategory.current) {
+      appliedUrlCategory.current = category;
+      if (category !== filters.category) dispatch(setCategory(category));
+    }
+  }, [dispatch, filters.category, searchParams]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 500);
@@ -108,7 +123,7 @@ export default function ShopPage() {
       </div>
       <div className="py-3">
         <label htmlFor="product-category" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Category</label>
-        <Select id="product-category" showSearch filterOption={false} onSearch={setCategorySearch} searchValue={categorySearch} notFoundContent={categoriesQuery.isFetching ? "Searching…" : "No matching categories"} className="filter-control w-full" value={filters.category || ""} onChange={(value) => { dispatch(setCategory(value)); setCategorySearch(""); }} options={[{ value: "", label: "All categories" }, ...(categoriesQuery.data || []).map((category) => ({ value: category.slug, label: category.name }))]} />
+        <Select id="product-category" showSearch filterOption={false} onSearch={setCategorySearch} searchValue={categorySearch} notFoundContent={categoriesQuery.isFetching ? "Searching…" : "No matching categories"} className="filter-control w-full" value={filters.category || ""} onChange={(value) => { dispatch(setCategory(value)); setCategorySearch(""); const next = new URLSearchParams(searchParams.toString()); if (value) next.set("category", value); else next.delete("category"); router.replace(`${pathname}${next.size ? `?${next.toString()}` : ""}`, { scroll: false }); }} options={[{ value: "", label: "All categories" }, ...(categoriesQuery.data || []).map((category) => ({ value: category.slug, label: category.name }))]} />
       </div>
       <div className="py-3">
         <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.11em] text-[#74796a]">Price range <span className="font-normal normal-case tracking-normal text-[#999b91]">(PKR)</span></p>
