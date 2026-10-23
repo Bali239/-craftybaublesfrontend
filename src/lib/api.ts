@@ -7,6 +7,21 @@ export const apiClient = axios.create({
   headers: { Accept: "application/json" },
 });
 
+export class ApiError extends Error {
+  code: string;
+  status?: number;
+  details?: unknown;
+  requestId?: string;
+  constructor(message: string, options: { code?: string; status?: number; details?: unknown; requestId?: string } = {}) {
+    super(message);
+    this.name = "ApiError";
+    this.code = options.code || "NETWORK_ERROR";
+    this.status = options.status;
+    this.details = options.details;
+    this.requestId = options.requestId;
+  }
+}
+
 apiClient.interceptors.request.use((config) => {
   const session = readSession();
   if (session?.token) config.headers.set("Authorization", `Bearer ${session.token}`);
@@ -38,7 +53,11 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     return response.data.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || `Request failed (${error.response?.status || "network error"})`);
+      const payload = error.response?.data;
+      throw new ApiError(payload?.message || (error.response ? `Request failed (${error.response.status})` : "Unable to reach the server. Check your connection and try again."), {
+        code: payload?.code || (error.response ? "REQUEST_FAILED" : "NETWORK_ERROR"), status: error.response?.status,
+        details: payload?.details, requestId: payload?.requestId,
+      });
     }
     throw error;
   }
