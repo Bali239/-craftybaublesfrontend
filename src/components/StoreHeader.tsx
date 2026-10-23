@@ -50,11 +50,13 @@ export default function StoreHeader() {
 
   const activeKey = pathname === "/admin"
     ? "admin"
-    : pathname === "/cart" || pathname.startsWith("/checkout")
+    : pathname === "/cart"
       ? "cart"
-      : pathname === "/shop" || pathname.startsWith("/products/")
-        ? "shop"
-        : "home";
+      :  pathname.startsWith("/wishlist")
+          ? "wishlist"
+          : pathname === "/shop" || pathname.startsWith("/products/")
+            ? "shop"
+            : "home";
 
   const startGoogleSignIn = () => {
     const authorizationUrl = new URL("/api/auth/google", API_URL);
@@ -84,6 +86,7 @@ export default function StoreHeader() {
   const navItems = [
     { key: "home", label: "Home", href: "/" },
     { key: "shop", label: "Shop", href: "/shop" },
+    { key: "wishlist", label: "Wishlist", href: "/wishlist" },
     { key: "cart", label: "Cart", href: "/cart" },
     ...(user?.role === "admin" ? [{ key: "admin", label: "Manage Store", href: "/admin" }] : []),
   ];
@@ -92,7 +95,7 @@ export default function StoreHeader() {
     <>
     <div aria-hidden="true" className="h-16 sm:h-[76px]" />
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-2 py-3 sm:py-4 [&_a]:cursor-pointer">
-      <nav aria-label="Primary" className="w-fit max-w-full rounded-full bg-[#17191d] p-1.5 shadow-lg shadow-black/15">
+      <nav aria-label="Primary" className="w-fit max-w-full overflow-x-auto rounded-full bg-[#17191d] p-1.5 shadow-lg shadow-black/15">
         <LayoutGroup id="store-nav-active-pill">
           <div className="flex w-max max-w-full items-center justify-center gap-0.5">
             {navItems.map((item) => {

@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Card, Drawer, Empty, Input, InputNumber, Pagination, Select, Skeleton, Switch, Tag } from "antd";
+import WishlistButton from "../../components/WishlistButton";
 import { api, formatPrice, type Category, type ProductPage } from "../../lib/api";
 import { queryKeys } from "../../lib/queryKeys";
 import { setBrand, setCategory, setDiscounted, setInStock, setMaxPrice, setMinPrice, setPage, setSearch, setSort, setTag, type AppDispatch, type RootState } from "../../store/store";
@@ -122,7 +123,8 @@ export default function ShopPage() {
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{Array.from({ length: 6 }, (_, index) => <Card key={index}><Skeleton active /></Card>)}</div>
             ) : page?.items.length ? <>
               <div className="grid gap-x-5 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">
-                {page.items.map((product) => <Link href={`/products/${product.slug}`} key={product._id} className="group block text-inherit">
+                {page.items.map((product) => <article key={product._id} className="group relative">
+                  <Link href={`/products/${product.slug}`} className="block text-inherit">
                   <div className="relative aspect-[4/4.5] overflow-hidden rounded-xl bg-[#efeee8]">
                     {product.images[0]?.secureUrl ? <Image fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" src={product.images[0].secureUrl} alt={product.images[0].altText || product.name} className="object-cover transition duration-500 group-hover:scale-[1.035]" /> : <div className="grid size-full place-items-center font-serif text-5xl text-[#b3b5a9]">N.</div>}
                     {product.discountPercent > 0 && <Tag color="red" className="absolute left-3 top-3">-{product.discountPercent}%</Tag>}
@@ -131,7 +133,9 @@ export default function ShopPage() {
                     <div><p className="text-[10px] uppercase tracking-[0.14em] text-[#8a8c80]">{product.category?.name || "Collection"}</p><h2 className="mt-1 font-medium text-[#303429] group-hover:text-[#758064]">{product.name}</h2></div>
                     <div className="shrink-0 text-right"><p className="text-sm font-semibold text-[#3d4235]">{formatPrice(product.salePriceMinor, product.currency)}</p>{product.discountPercent > 0 && <p className="text-xs text-[#9a9a90] line-through">{formatPrice(product.priceMinor, product.currency)}</p>}</div>
                   </div>
-                </Link>)}
+                  </Link>
+                  <WishlistButton productId={product._id} productName={product.name} className="absolute right-3 top-3 z-10" />
+                </article>)}
               </div>
               <div className="mt-10 flex justify-center"><Pagination current={page.pagination.page} pageSize={page.pagination.limit} total={page.pagination.total} showSizeChanger={false} onChange={(value) => { dispatch(setPage(value)); window.scrollTo({ top: 0, behavior: "smooth" }); }} /></div>
             </> : <div className="rounded-xl border border-dashed border-[#dcdcd2] bg-white/50 py-16"><Empty description="No products match those filters." /></div>}
