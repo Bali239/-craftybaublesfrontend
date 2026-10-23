@@ -10,7 +10,7 @@ import StoreHeader from "../components/StoreHeader";
 import { api, formatPrice, type Category, type ProductPage } from "../lib/api";
 import { queryKeys } from "../lib/queryKeys";
 import { setBrand, setCategory, setDiscounted, setInStock, setMaxPrice, setMinPrice, setPage, setSearch, setSort, setTag, type AppDispatch, type RootState } from "../store/store";
-
+import CoverFlowCarousel from "../components/pixel-perfect/cover-flow-carousel";
 export default function Home() {
   const dispatch = useDispatch<AppDispatch>();
   const filters = useSelector((state: RootState) => state.catalog);
@@ -34,10 +34,7 @@ export default function Home() {
   return <div className="min-h-screen bg-[#fbfaf7]">
     <StoreHeader />
     <main className="mx-auto max-w-7xl px-5 pb-16">
-      <section className="relative my-7 overflow-hidden rounded-2xl bg-[#e8e8de] px-7 py-12 sm:my-10 sm:px-14 sm:py-16">
-        <div className="relative z-10 max-w-xl"><p className="mb-3 text-[10px] font-bold tracking-[0.25em] text-[#727965]">THOUGHTFULLY CHOSEN</p><h1 className="font-serif text-4xl leading-tight text-[#2d3327] sm:text-5xl">Find the pieces<br />that feel like you.</h1><p className="mt-4 max-w-md text-sm leading-7 text-[#6e7165]">Everyday essentials and considered details, gathered in one place.</p><a href="#shop" className="mt-6 inline-flex rounded-full bg-[#657052] px-6 py-3 text-sm font-medium text-white">Explore the collection</a></div>
-        <div aria-hidden className="absolute -right-12 -top-16 size-80 rounded-full border-[46px] border-white/30 sm:right-12 sm:top-5" />
-      </section>
+     <CoverFlowCarousel/>
       <section id="shop" className="scroll-mt-24">
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-[10px] font-bold tracking-[0.22em] text-[#858978]">THE COLLECTION</p><h2 className="mt-1 font-serif text-3xl text-[#303429]">Shop all</h2></div><p className="text-sm text-[#85877d]">A little something for every day.</p></div>
         <div className="mb-7 grid gap-3 rounded-xl border border-[#e7e5dc] bg-white/75 p-4 md:grid-cols-2 lg:grid-cols-[minmax(200px,1fr)_190px_180px_150px_150px]">
