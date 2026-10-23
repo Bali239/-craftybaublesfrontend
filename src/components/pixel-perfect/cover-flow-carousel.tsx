@@ -175,7 +175,7 @@ const CoverFlowCarousel = () => {
                     "linear-gradient(to top, rgba(0,0,0,0.5), transparent 55%)",
                 }}
               />
-              <p className="pointer-events-none absolute -bottom-2 left-0 right-0 text-center text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+              <p className="pointer-events-none absolute -bottom-2 left-0 right-0 text-center text-[10px] font-medium uppercase tracking-widest text-[#737373]">
                 {cover.title}
               </p>
             </div>
