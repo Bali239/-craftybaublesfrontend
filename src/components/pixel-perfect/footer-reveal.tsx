@@ -39,7 +39,7 @@ export default function FooterReveal({ children }: FooterRevealProps) {
                 Explore
               </p>
               <ul className="mt-4 space-y-3 text-sm">
-                <li><Link className="text-white/80 transition-colors hover:text-white" href="/#shop">Shop all</Link></li>
+                <li><Link className="text-white/80 transition-colors hover:text-white" href="/shop">Shop all</Link></li>
                 <li><Link className="text-white/80 transition-colors hover:text-white" href="/cart">Your cart</Link></li>
               </ul>
             </nav>
