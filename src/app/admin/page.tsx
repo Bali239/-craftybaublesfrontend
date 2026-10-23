@@ -33,9 +33,6 @@ export default function AdminPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [categoryCreateOpen, setCategoryCreateOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [searchDraft, setSearchDraft] = useState(filters.search);
-  const [brandDraft, setBrandDraft] = useState(filters.brand);
-  const [tagDraft, setTagDraft] = useState(filters.tag);
   const [categorySearch, setCategorySearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search);
   const [debouncedBrand, setDebouncedBrand] = useState(filters.brand);
@@ -45,9 +42,9 @@ export default function AdminPage() {
   const [categoryForm] = Form.useForm();
 
   useEffect(() => { const timer = window.setTimeout(() => setAuthorized(readSession()?.user.role === "admin"), 0); return () => window.clearTimeout(timer); }, []);
-  useEffect(() => { const timer = window.setTimeout(() => { const value = searchDraft.trim(); setDebouncedSearch(value); dispatch(setSearch(value)); }, 500); return () => window.clearTimeout(timer); }, [searchDraft, dispatch]);
-  useEffect(() => { const timer = window.setTimeout(() => { const value = brandDraft.trim(); setDebouncedBrand(value); dispatch(setBrand(value)); }, 500); return () => window.clearTimeout(timer); }, [brandDraft, dispatch]);
-  useEffect(() => { const timer = window.setTimeout(() => { const value = tagDraft.trim(); setDebouncedTag(value); dispatch(setTag(value)); }, 500); return () => window.clearTimeout(timer); }, [tagDraft, dispatch]);
+  useEffect(() => { const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 500); return () => window.clearTimeout(timer); }, [filters.search]);
+  useEffect(() => { const timer = window.setTimeout(() => setDebouncedBrand(filters.brand.trim()), 500); return () => window.clearTimeout(timer); }, [filters.brand]);
+  useEffect(() => { const timer = window.setTimeout(() => setDebouncedTag(filters.tag.trim()), 500); return () => window.clearTimeout(timer); }, [filters.tag]);
   useEffect(() => { const timer = window.setTimeout(() => setDebouncedCategorySearch(categorySearch.trim()), 500); return () => window.clearTimeout(timer); }, [categorySearch]);
 
   const priceRangeInvalid = Boolean(filters.minPrice && filters.maxPrice && Number(filters.minPrice) > Number(filters.maxPrice));
@@ -88,8 +85,7 @@ export default function AdminPage() {
   const addCategory = useMutation({ mutationFn: (values: { name: string; description?: string }) => api("/api/categories", { method: "POST", body: JSON.stringify(values) }), onSuccess: () => { toast.success("Category created."); categoryForm.resetFields(); setCategoryCreateOpen(false); }, onSettled: () => { void queryClient.invalidateQueries({ queryKey: queryKeys.categories.all }); }, onError: (error: Error) => toast.error(error.message) });
 
   const clearFilters = () => {
-    setSearchDraft(""); setBrandDraft(""); setTagDraft("");
-    dispatch(setSearch("")); dispatch(setCategory("")); dispatch(setMinPrice("")); dispatch(setMaxPrice("")); dispatch(setBrand("")); dispatch(setTag("")); dispatch(setInStock(false)); dispatch(setDiscounted(false)); dispatch(setPage(1)); dispatch(setSort("newest"));
+    dispatch(setSearch("")); dispatch(setCategory("")); dispatch(setMinPrice("")); dispatch(setMaxPrice("")); dispatch(setBrand("")); dispatch(setTag("")); dispatch(setInStock(false)); dispatch(setDiscounted(false)); dispatch(setStatus("")); dispatch(setPage(1)); dispatch(setSort("newest"));
   };
   const activeCount = Number(Boolean(debouncedSearch)) + Number(Boolean(filters.category)) + Number(Boolean(filters.minPrice)) + Number(Boolean(filters.maxPrice)) + Number(Boolean(debouncedBrand)) + Number(Boolean(debouncedTag)) + Number(filters.inStock) + Number(filters.discounted) + Number(Boolean(filters.status));
   const openEdit = (product: Product) => { setFiles([]); setEditing(product); setCreateOpen(false); };
@@ -101,11 +97,11 @@ export default function AdminPage() {
   const categoryOptions = [{ value: "", label: "All categories" }, ...(categories.data || []).map((category) => ({ value: category.slug, label: category.name }))];
 
   const filterControls = <div className="space-y-4">
-    <div><label className="mb-1 block text-xs font-medium text-[#686d60]">Search</label><Input aria-label="Search products" allowClear placeholder="Name or description" value={searchDraft} onChange={(event) => setSearchDraft(event.target.value)} /></div>
+    <div><label className="mb-1 block text-xs font-medium text-[#686d60]">Search</label><Input aria-label="Search products" allowClear placeholder="Name or description" value={filters.search} onChange={(event) => dispatch(setSearch(event.target.value))} /></div>
     <div><label className="mb-1 block text-xs font-medium text-[#686d60]">Category</label><Select aria-label="Filter by category" showSearch filterOption={false} searchValue={categorySearch} onSearch={setCategorySearch} className="w-full" value={filters.category || ""} onChange={(value) => { dispatch(setCategory(value)); setCategorySearch(""); }} options={categoryOptions} notFoundContent={categories.isFetching ? "Searching…" : "No categories found"} /></div>
     <div><label className="mb-1 block text-xs font-medium text-[#686d60]">Price range (PKR)</label><div className="grid grid-cols-2 gap-2"><InputNumber aria-label="Minimum price" min={0} placeholder="Min" className="!w-full" value={filters.minPrice ? Number(filters.minPrice) : null} onChange={(value) => dispatch(setMinPrice(value == null ? "" : String(value)))} /><InputNumber aria-label="Maximum price" min={0} placeholder="Max" className="!w-full" value={filters.maxPrice ? Number(filters.maxPrice) : null} onChange={(value) => dispatch(setMaxPrice(value == null ? "" : String(value)))} /></div>{priceRangeInvalid && <p className="mt-1 text-xs text-red-700">Maximum must be at least minimum.</p>}</div>
-    <div><label className="mb-1 block text-xs font-medium text-[#686d60]">Brand</label><Input aria-label="Filter by brand" allowClear placeholder="Any brand" value={brandDraft} onChange={(event) => setBrandDraft(event.target.value)} /></div>
-    <div><label className="mb-1 block text-xs font-medium text-[#686d60]">Tag</label><Input aria-label="Filter by tag" allowClear placeholder="Any tag" value={tagDraft} onChange={(event) => setTagDraft(event.target.value)} /></div>
+    <div><label className="mb-1 block text-xs font-medium text-[#686d60]">Brand</label><Input aria-label="Filter by brand" allowClear placeholder="Any brand" value={filters.brand} onChange={(event) => dispatch(setBrand(event.target.value))} /></div>
+    <div><label className="mb-1 block text-xs font-medium text-[#686d60]">Tag</label><Input aria-label="Filter by tag" allowClear placeholder="Any tag" value={filters.tag} onChange={(event) => dispatch(setTag(event.target.value))} /></div>
     <div><label className="mb-1 block text-xs font-medium text-[#686d60]">Status</label><Select aria-label="Filter by status" className="w-full" value={filters.status || ""} onChange={(value) => dispatch(setStatus(value))} options={statusOptions} /></div>
     <div className="space-y-2 border-t border-[#eceae3] pt-3"><label className="flex min-h-8 items-center justify-between text-sm text-[#54594e]">In stock <Switch checked={filters.inStock} onChange={(value) => dispatch(setInStock(value))} /></label><label className="flex min-h-8 items-center justify-between text-sm text-[#54594e]">Discounted <Switch checked={filters.discounted} onChange={(value) => dispatch(setDiscounted(value))} /></label></div>
     <Button type="text" disabled={!activeCount} onClick={clearFilters} className="!px-0 !text-[#697457]">Clear all filters</Button>
