@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert, App, Button, InputNumber, Skeleton, Tag } from "antd";
-import StoreHeader from "../../../components/StoreHeader";
 import { api, formatPrice, type Product } from "../../../lib/api";
 import { queryKeys } from "../../../lib/queryKeys";
 import { readSession } from "../../../lib/session";
@@ -24,7 +23,7 @@ export default function ProductDetailPage() {
   const productQuery = useQuery({ queryKey: queryKeys.products.detail(id), queryFn: () => api<Product>(`/api/products/${encodeURIComponent(id)}`) });
   const addMutation = useMutation({ mutationFn: () => api("/api/cart/items", { method: "POST", body: JSON.stringify({ productId: productQuery.data?._id, quantity }) }), onSuccess: () => { message.success("Added to your cart."); client.invalidateQueries({ queryKey: ["cart"] }); }, onError: (error: Error) => message.error(error.message) });
   const product = productQuery.data;
-  return <div className="min-h-screen bg-[#fbfaf7]"><StoreHeader /><main className="mx-auto max-w-6xl px-5 py-8">
+  return <div className="min-h-screen bg-[#fbfaf7]"><main className="mx-auto max-w-6xl px-5 py-8">
     <Link href="/" className="text-sm text-[#7c806f]">← Back to collection</Link>
     {productQuery.isLoading ? <div className="mt-8 grid gap-10 md:grid-cols-2"><Skeleton.Image active className="!h-[520px] !w-full" /><Skeleton active /></div> : productQuery.error ? <Alert className="mt-8" type="error" showIcon title={(productQuery.error as Error).message} /> : product && <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-14">
       <div className="grid grid-cols-2 gap-3">{(product.images.length ? product.images : [{ _id: "empty", secureUrl: "", altText: "" }]).map((image) => <div key={image._id} className="relative aspect-square overflow-hidden rounded-xl bg-[#efeee8] first:col-span-2">{image.secureUrl ? <Image fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" src={image.secureUrl} alt={image.altText || product.name} /> : <div className="grid size-full place-items-center font-serif text-6xl text-[#b3b5a9]">N.</div>}</div>)}</div>

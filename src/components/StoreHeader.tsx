@@ -1,18 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutGroup, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { App, Avatar, Button } from "antd";
-import { api } from "../lib/api";
+import { App } from "antd";
+import { API_URL, api } from "../lib/api";
 import { clearSession, readSession, saveSession, type StoreUser } from "../lib/session";
-import GoogleSignInButton from "./GoogleSignInButton";
 
 export default function StoreHeader() {
   const { message } = App.useApp();
+  const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<StoreUser | null>(null);
-  const [ready, setReady] = useState(false);
+
   useEffect(() => {
     let cancelled = false;
     const fragment = new URLSearchParams(window.location.hash.slice(1));
@@ -24,6 +25,7 @@ export default function StoreHeader() {
       } catch { message.error("Sign-in response could not be read."); }
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
     }
+
     const authError = new URLSearchParams(window.location.search).get("auth_error");
     if (authError) {
       message.error(authError);
@@ -32,25 +34,89 @@ export default function StoreHeader() {
       const query = search.toString();
       window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
     }
+
     const session = readSession();
-    if (!session) { const task = window.setTimeout(() => { if (!cancelled) setReady(true); }, 0); return () => { cancelled = true; window.clearTimeout(task); }; }
+    if (!session) return () => { cancelled = true; };
     api<{ user: StoreUser }>("/api/auth/me").then(({ user: nextUser }) => {
-      if (!cancelled) { setUser(nextUser); saveSession({ ...session, user: nextUser }); }
-    }).catch(() => { clearSession(); if (!cancelled) setUser(null); }).finally(() => { if (!cancelled) setReady(true); });
+      if (!cancelled) {
+        setUser(nextUser);
+        saveSession({ ...session, user: nextUser });
+      }
+    }).catch(() => {
+      clearSession();
+      if (!cancelled) setUser(null);
+    });
     return () => { cancelled = true; };
   }, [message]);
-  const logout = async () => {
-    try { await api("/api/auth/logout", { method: "POST" }); } catch { /* local sign-out still clears this device */ }
-    clearSession(); setUser(null); router.push("/");
+
+  const activeKey = pathname === "/admin"
+    ? "admin"
+    : pathname === "/cart" || pathname.startsWith("/checkout")
+      ? "cart"
+      : pathname === "/shop" || pathname.startsWith("/products/")
+        ? "shop"
+        : "home";
+
+  const startGoogleSignIn = () => {
+    const authorizationUrl = new URL("/api/auth/google", API_URL);
+    authorizationUrl.searchParams.set("returnTo", "/cart");
+    window.location.assign(authorizationUrl.toString());
   };
-  return <header className="sticky top-0 z-20 border-b border-[#e8e6de] bg-[#fbfaf7]/95 backdrop-blur">
-    <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-      <Link href="/" className="font-serif text-xl text-[#303429]">NaqshCorner</Link>
-      <nav className="flex items-center gap-3 text-sm">
-        <Link href="/cart" className="px-2 text-[#53594c] hover:text-[#8a7051]">Cart</Link>
-        {user?.role === "admin" && <Link href="/admin" className="px-2 text-[#53594c]">Manage store</Link>}
-        {ready && (user ? <><Avatar size="small" src={user.photoUrl}>{user.name[0]}</Avatar><span className="hidden text-[#53594c] sm:inline">{user.name.split(" ")[0]}</span><Button size="small" onClick={logout}>Sign out</Button></> : <GoogleSignInButton type="primary" shape="round">Sign in</GoogleSignInButton>)}
+
+  const openCart = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (user && readSession()) return;
+    event.preventDefault();
+
+    const session = readSession();
+    if (session) {
+      try {
+        const { user: authenticatedUser } = await api<{ user: StoreUser }>("/api/auth/me");
+        saveSession({ ...session, user: authenticatedUser });
+        setUser(authenticatedUser);
+        router.push("/cart");
+        return;
+      } catch {
+        clearSession();
+      }
+    }
+    startGoogleSignIn();
+  };
+
+  const navItems = [
+    { key: "home", label: "Home", href: "/" },
+    { key: "shop", label: "Shop", href: "/shop" },
+    { key: "cart", label: "Cart", href: "/cart" },
+    ...(user?.role === "admin" ? [{ key: "admin", label: "Manage Store", href: "/admin" }] : []),
+  ];
+
+  return (
+    <header className="sticky top-0 z-20 flex justify-center bg-[#fbfaf7]/95 px-2 py-3 backdrop-blur sm:py-4">
+      <nav aria-label="Primary" className="max-w-full rounded-full bg-[#17191d] p-1.5 shadow-lg shadow-black/15">
+        <LayoutGroup id="store-nav-active-pill">
+          <div className="flex w-max max-w-full items-center justify-center gap-0.5">
+            {navItems.map((item) => {
+              const active = activeKey === item.key;
+              return (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  onClick={item.key === "cart" ? openCart : undefined}
+                  aria-current={active ? "page" : undefined}
+                  className={`relative isolate flex shrink-0 items-center justify-center rounded-full px-2.5 py-2 text-[11px] font-bold text-white transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#17191d] sm:px-4 sm:py-2.5 sm:text-sm ${active ? "text-[#17191d]" : "hover:text-white"}`}
+                >
+                  {active && <motion.span
+                    layoutId="store-nav-active"
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 rounded-full bg-white"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                  />}
+                  <span style={{ color: active ? "#17191d" : "#ffffff" }}>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </LayoutGroup>
       </nav>
-    </div>
-  </header>;
+    </header>
+  );
 }
