@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  images: { remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com" }] },
+  images: { remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com" }], qualities: [75, 90] },
   async rewrites() {
     const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "");
     return apiUrl

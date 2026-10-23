@@ -5,49 +5,35 @@
  */
 
 import { useEffect, useRef } from "react";
-
-// Flat, high-contrast swatches: a solid fill, one hard-edged motif, and a text colour that reads on it.
-const SWATCHES = [
-  { bg: "#ff5f1f", ink: "#151515", motif: "conic-gradient(at 62.5% 37.5%, #f6a8f2 25%, transparent 0) 0 0 / 32px 32px" },
-  { bg: "#2d4bff", ink: "#ffffff", motif: "linear-gradient(90deg, #9dbbff 2px, transparent 0) 0 0 / 44px 44px, linear-gradient(#9dbbff 2px, transparent 0) 0 0 / 44px 44px" },
-  { bg: "#f6a8f2", ink: "#151515", motif: "repeating-radial-gradient(circle at 30% 70%, #ff5f1f 0 12px, transparent 12px 34px)" },
-  { bg: "#ffb000", ink: "#151515", motif: "repeating-linear-gradient(45deg, #151515 0 9px, transparent 9px 30px)" },
-  { bg: "#6b3ce6", ink: "#ffffff", motif: "radial-gradient(circle, #ffb000 0 7px, transparent 7.5px) 0 0 / 36px 36px" },
-  { bg: "#9dbbff", ink: "#151515", motif: "repeating-linear-gradient(0deg, #2d4bff 0 6px, transparent 6px 22px)" },
-];
-
-const COVERS = [
-  { title: "Midnight Drive" },
-  { title: "Glasshouse" },
-  { title: "Low Tide" },
-  { title: "Neon Fields" },
-  { title: "Palerose" },
-  { title: "Static Bloom" },
-  { title: "Vantablack" },
-  { title: "Golden Hour" },
-  { title: "Undertow" },
-  { title: "Northern Line" },
-];
+import Image from "next/image";
+import Link from "next/link";
+import type { Product } from "../../lib/api";
 
 const C = {
   persp: 1100, // CSS perspective distance (px)
-  cw: 250, // cover width (px)
-  ch: 250, // cover height (px)
-  gap: 118, // → right per step
-  push: 105, // extra shove away from the centre cover
+  cw: 300, // cover width (px)
+  ch: 300, // cover height (px)
+  gap: 138, // → right per step
+  push: 120, // extra shove away from the centre cover
   rot: 55, // side-cover angle about Y (deg)
   depth: 150, // how far the centre cover pops forward (px)
   fall: 60, // how far each further step recedes (px)
 };
 
-const CoverFlowCarousel = () => {
+const wrappedOffset = (position: number, count: number) => {
+  const wrapped = ((position % count) + count) % count;
+  return wrapped > count / 2 ? wrapped - count : wrapped;
+};
+
+const CoverFlowCarousel = ({ products }: { products: Product[] }) => {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const pos = useRef(0);
   const target = useRef(0);
   const moved = useRef(0);
 
   useEffect(() => {
-    const N = COVERS.length;
+    const N = products.length;
+    if (N === 0) return;
 
     let dragging = false;
     let lastX = 0;
@@ -118,36 +104,29 @@ const CoverFlowCarousel = () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
     };
-  }, []);
+  }, [products.length]);
 
-  const bringToFront = (i: number) => {
-    if (moved.current > 6) return; // it was a drag, not a click
-    const N = COVERS.length;
-    let p = ((i - pos.current) % N) + (i - pos.current < 0 ? N : 0);
-    if (p > N / 2) p -= N;
-    target.current = Math.round(pos.current + p);
-  };
+  if (products.length === 0) {
+    return <div className="grid h-[calc(100svh-4rem)] min-h-[560px] w-full place-items-center text-sm text-[#737373]">No products to feature yet.</div>;
+  }
 
   return (
     <div
       data-coverflow
-      className="relative flex h-[80vh] w-full cursor-grab select-none items-center justify-center overflow-hidden active:cursor-grabbing"
+      className="relative flex h-[calc(100svh-4rem)] min-h-[560px] w-full cursor-grab select-none items-center justify-center overflow-hidden active:cursor-grabbing"
       style={{ perspective: `${C.persp}px` }}
     >
       <div
-        className="relative -mt-10"
+        className="relative"
         style={{ transformStyle: "preserve-3d" }}
       >
-        {COVERS.map((cover, i) => {
-          const swatch = SWATCHES[i % SWATCHES.length];
-          const fill = `${swatch.motif}, ${swatch.bg}`;
+        {products.map((product, i) => {
           return (
             <div
-              key={cover.title}
+              key={product._id}
               ref={(el) => {
                 cardRefs.current[i] = el;
               }}
-              onClick={() => bringToFront(i)}
               className="absolute"
               style={{
                 width: C.cw,
@@ -157,27 +136,44 @@ const CoverFlowCarousel = () => {
                 willChange: "transform, opacity",
               }}
             >
-              <div
-                className="rounded-md ring-1 ring-white/20"
-                style={{ width: C.cw, height: C.ch, background: fill }}
-              />
-              {/* floor reflection — a flipped copy fading out under the cover */}
-              <div
-                className="mt-1 rounded-md opacity-40"
-                style={{
-                  width: C.cw,
-                  height: C.ch,
-                  background: fill,
-                  transform: "scaleY(-1)",
-                  maskImage:
-                    "linear-gradient(to top, rgba(0,0,0,0.5), transparent 55%)",
-                  WebkitMaskImage:
-                    "linear-gradient(to top, rgba(0,0,0,0.5), transparent 55%)",
+              <Link
+                href={`/products/${product.slug}`}
+                aria-label={`View ${product.name}`}
+                onClick={(event) => {
+                  const offset = wrappedOffset(i - pos.current, products.length);
+                  const isCentered = Math.abs(offset) < 0.2;
+
+                  if (moved.current > 6 || !isCentered) {
+                    event.preventDefault();
+                    if (moved.current <= 6) {
+                      target.current = Math.round(pos.current + offset);
+                    }
+                  }
+                  moved.current = 0;
                 }}
-              />
-              <p className="pointer-events-none absolute -bottom-2 left-0 right-0 text-center text-[10px] font-medium uppercase tracking-widest text-[#737373]">
-                {cover.title}
-              </p>
+                className="block"
+              >
+                <div className="relative overflow-hidden rounded-md bg-[#efeee8] ring-1 ring-black/10" style={{ width: C.cw, height: C.ch }}>
+                  {product.images[0]?.secureUrl ? (
+                    <Image fill priority={i < 3} quality={90} sizes="300px" src={product.images[0].secureUrl} alt="" draggable={false} className="pointer-events-none object-cover" />
+                  ) : (
+                    <div className="grid size-full place-items-center font-serif text-5xl text-[#b3b5a9]">N.</div>
+                  )}
+                </div>
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none relative mt-1 overflow-hidden rounded-md opacity-35"
+                  style={{
+                    width: C.cw,
+                    height: C.ch,
+                    transform: "scaleY(-1)",
+                    maskImage: "linear-gradient(to top, rgba(0,0,0,0.5), transparent 55%)",
+                    WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.5), transparent 55%)",
+                  }}
+                >
+                  {product.images[0]?.secureUrl && <Image fill quality={90} sizes="300px" src={product.images[0].secureUrl} alt="" draggable={false} className="object-cover" />}
+                </div>
+              </Link>
             </div>
           );
         })}
