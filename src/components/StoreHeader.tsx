@@ -90,8 +90,8 @@ export default function StoreHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-20 flex justify-center bg-[#fbfaf7]/95 px-2 py-3 backdrop-blur sm:py-4">
-      <nav aria-label="Primary" className="max-w-full rounded-full bg-[#17191d] p-1.5 shadow-lg shadow-black/15">
+    <header className="sticky top-0 z-20 flex justify-center px-2 py-3 sm:py-4">
+      <nav aria-label="Primary" className="w-fit max-w-full rounded-full bg-[#17191d] p-1.5 shadow-lg shadow-black/15">
         <LayoutGroup id="store-nav-active-pill">
           <div className="flex w-max max-w-full items-center justify-center gap-0.5">
             {navItems.map((item) => {

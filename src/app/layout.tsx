@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className="min-h-screen bg-[#f4f1eb] font-sans text-[#252820] antialiased">
+      <body className="min-h-screen bg-[#fbfaf7] font-sans text-[#252820] antialiased">
         <AntdRegistry>
           <Providers><StoreHeader /><FooterReveal>{children}</FooterReveal></Providers>
         </AntdRegistry>

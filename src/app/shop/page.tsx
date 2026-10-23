@@ -100,11 +100,7 @@ export default function ShopPage() {
   return (
     <div className="min-h-screen bg-[#fbfaf7]">
       <main className="mx-auto max-w-7xl px-5 pb-16 pt-10">
-        <header className="mb-8">
-          <p className="text-[10px] font-bold tracking-[0.22em] text-[#858978]">THE COLLECTION</p>
-          <h1 className="mt-1 font-serif text-3xl text-[#303429] sm:text-4xl">Shop all</h1>
-          <p className="mt-2 text-sm text-[#85877d]">Thoughtfully chosen essentials and considered details.</p>
-        </header>
+
 
         <div className="grid items-start gap-8 lg:grid-cols-[250px_minmax(0,1fr)]">
           <aside aria-label="Product filters" className="sticky top-24 hidden rounded-xl border border-[#e7e5dc] bg-white/85 p-5 lg:block">
