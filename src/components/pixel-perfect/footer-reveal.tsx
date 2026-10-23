@@ -1,10 +1,20 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 type FooterRevealProps = { children: ReactNode };
 
 /** Keeps the store footer behind the page content so it is uncovered as the page scrolls away. */
 export default function FooterReveal({ children }: FooterRevealProps) {
+  const pathname = usePathname();
+  const hideFooter = pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/products/");
+
+  if (hideFooter) {
+    return <div className="w-full bg-[#fbfaf7]">{children}</div>;
+  }
+
   return (
     <div className="relative isolate w-full">
       <div className="relative z-10 bg-[#fbfaf7]">{children}</div>
