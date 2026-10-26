@@ -46,16 +46,19 @@ export default function CartPage() {
     },
     onError: (error: Error) => toast.error(error.message),
   });
+  const cart = cartQuery.data;
   const checkout = useMutation({
-    mutationFn: () => api<Order>("/api/orders/checkout", { method: "POST" }),
-    onSuccess: (order) => {
+    mutationFn: async () => {
+      if (!cart) throw new Error("Your cart is empty.");
+      return cart;
+    },
+    onSuccess: () => {
       void refreshCart();
-      router.push(`/checkout?order=${encodeURIComponent(order.orderNumber)}`);
+      router.push("/checkout");
     },
     onError: (error: Error) => toast.error(error.message),
   });
 
-  const cart = cartQuery.data;
   const updatePending = changeQuantity.isPending || removeItem.isPending;
 
   return <div className="min-h-screen bg-[#fbfaf7] [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_img]:cursor-pointer">

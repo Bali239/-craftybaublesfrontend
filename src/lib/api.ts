@@ -38,7 +38,38 @@ export type Product = {
 };
 export type ProductPage = { items: Product[]; pagination: { page: number; limit: number; total: number; pages: number } };
 export type WishlistPage = ProductPage;
-export type Order = { orderNumber: string; status: string; paymentStatus: string; items: { name: string; quantity: number; lineTotalMinor: number }[]; currency: string; subtotalMinor: number; totalMinor: number };
+export type Order = {
+  _id?: string;
+  orderNumber: string;
+  status: string;
+  paymentStatus: string;
+  paymentMethod?: string;
+  customerEmail?: string;
+  recipientName?: string;
+  phoneNumber?: string;
+  shipping?: {
+    address: string;
+    province?: string;
+    district?: string;
+    city?: string;
+    landmark?: string;
+    postalCode?: string;
+    deliveryInstructions?: string;
+  };
+  items: { _id?: string; product?: string; productName?: string; name?: string; quantity: number; lineTotalMinor: number; unitPriceMinor?: number; imageUrl?: string }[];
+  currency: string;
+  subtotalMinor: number;
+  discountAmountMinor?: number;
+  shippingFeeMinor?: number;
+  taxMinor?: number;
+  totalMinor: number;
+  createdAt?: string;
+  updatedAt?: string;
+  statusHistory?: { status: string; note?: string; at: string }[];
+  paymentHistory?: { status: string; note?: string; at: string }[];
+  adminNotes?: { text: string; createdAt: string }[];
+};
+export type OrderPage = { items: Order[]; pagination: { page: number; limit: number; total: number; pages: number } };
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const config: AxiosRequestConfig = {
