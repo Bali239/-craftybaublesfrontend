@@ -8,6 +8,7 @@ import { Alert, Button, Skeleton, Tag, Timeline } from "antd";
 import { ArrowLeft } from "lucide-react";
 import { api, formatPrice, type Order } from "../../../lib/api";
 import { readSession } from "../../../lib/session";
+import { getSocket } from "../../../lib/socket";
 import NotificationBell from "../../../features/notifications/components/NotificationBell";
 
 const statusLabels: Record<string, string> = {
