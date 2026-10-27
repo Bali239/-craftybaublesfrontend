@@ -8,7 +8,7 @@ import { Alert, Button, Skeleton, Tag, Timeline } from "antd";
 import { ArrowLeft } from "lucide-react";
 import { api, formatPrice, type Order } from "../../../lib/api";
 import { readSession } from "../../../lib/session";
-import { getSocket } from "../../../lib/socket";
+import NotificationBell from "../../../components/NotificationBell";
 
 const statusLabels: Record<string, string> = {
   placed: "Placed",
@@ -117,9 +117,10 @@ export default function OrderDetailPage() {
             <h1 className="mt-2 font-serif text-3xl text-[#303429] sm:text-4xl">Your Order</h1>
             <p className="mt-2 text-sm text-[#77796e]">Placed {dateLabel(order.createdAt)}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Tag color={statusColors[order.status] || "default"}>{statusLabels[order.status] || order.status}</Tag>
             <Tag color={order.paymentStatus === "collected" ? "green" : order.paymentStatus === "failed" ? "red" : "gold"}>{paymentLabels[order.paymentStatus] || order.paymentStatus}</Tag>
+            <NotificationBell />
           </div>
         </div>
 

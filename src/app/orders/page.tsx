@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert, Button, Empty, Skeleton, Tag } from "antd";
 import { ArrowLeft, ClipboardList, ExternalLink } from "lucide-react";
@@ -9,6 +9,7 @@ import { api, formatPrice, type Order } from "../../lib/api";
 import { queryKeys } from "../../lib/queryKeys";
 import { readSession } from "../../lib/session";
 import { getSocket } from "../../lib/socket";
+import NotificationBell from "../../components/NotificationBell";
 
 const statusLabels: Record<string, string> = {
   placed: "Placed",
@@ -87,10 +88,13 @@ export default function OrdersPage() {
     <main className="min-h-screen bg-[#fbfaf7]">
       <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
         <Link href="/" className="inline-flex items-center gap-2 text-sm text-[#73796a] hover:text-[#303429]"><ArrowLeft size={15} /> Back to store</Link>
-        <div className="mt-5">
-          <p className="text-[10px] font-bold tracking-[0.2em] text-[#858978]">YOUR ORDERS</p>
-          <h1 className="mt-2 font-serif text-3xl text-[#303429] sm:text-4xl">Order history</h1>
-          <p className="mt-2 text-sm text-[#77796e]">Track status updates in real time after placing your order.</p>
+        <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-bold tracking-[0.2em] text-[#858978]">YOUR ORDERS</p>
+            <h1 className="mt-2 font-serif text-3xl text-[#303429] sm:text-4xl">Order history</h1>
+            <p className="mt-2 text-sm text-[#77796e]">Track status updates in real time after placing your order.</p>
+          </div>
+          <NotificationBell />
         </div>
 
         <section className="mt-6 space-y-3">

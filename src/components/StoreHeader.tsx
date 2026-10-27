@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { API_URL, api } from "../lib/api";
 import { clearSession, readSession, saveSession, type StoreUser } from "../lib/session";
 import { disconnectSocket } from "../lib/socket";
+import NotificationBell from "./NotificationBell";
 
 export default function StoreHeader() {
   const pathname = usePathname();
@@ -123,6 +124,7 @@ export default function StoreHeader() {
                 </Link>
               );
             })}
+            {user && <div className="ml-1 flex items-center"><NotificationBell /></div>}
           </div>
         </LayoutGroup>
       </nav>

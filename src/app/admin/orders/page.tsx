@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { api, formatPrice, type Order, type OrderPage } from "../../../lib/api";
 import { queryKeys } from "../../../lib/queryKeys";
 import { readSession } from "../../../lib/session";
+import NotificationBell from "../../../components/NotificationBell";
 
 const statusLabels: Record<string, string> = {
   placed: "Placed",
@@ -198,7 +199,10 @@ export default function AdminOrdersPage() {
             <h1 className="mt-2 font-serif text-3xl text-[#303429] sm:text-4xl">Manage orders</h1>
             <p className="mt-2 text-sm text-[#77796e]">Review COD orders, update fulfillment, and record collected payments.</p>
           </div>
-          <Button icon={<RefreshCw size={15} />} onClick={() => ordersQuery.refetch()} loading={ordersQuery.isFetching}>Refresh</Button>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <Button icon={<RefreshCw size={15} />} onClick={() => ordersQuery.refetch()} loading={ordersQuery.isFetching}>Refresh</Button>
+          </div>
         </div>
 
         <section className="mt-6 rounded-xl border border-[#e7e5dc] bg-white p-4 sm:p-5">
