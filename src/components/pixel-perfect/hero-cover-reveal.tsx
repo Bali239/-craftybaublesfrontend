@@ -44,7 +44,12 @@ const HeroCoverReveal = () => {
 
       gsap.fromTo(
         hr,
-        { scale: 1, rotation: 0, yPercent: 0, filter: "blur(0px) brightness(1)" },
+        {
+          scale: 1,
+          rotation: 0,
+          yPercent: 0,
+          filter: "blur(0px) brightness(1)",
+        },
         {
           scale: 0.92,
           rotation: 6,

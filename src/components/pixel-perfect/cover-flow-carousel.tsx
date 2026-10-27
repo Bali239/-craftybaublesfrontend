@@ -107,7 +107,11 @@ const CoverFlowCarousel = ({ products }: { products: Product[] }) => {
   }, [products.length]);
 
   if (products.length === 0) {
-    return <div className="grid h-[calc(100svh-4rem)] min-h-[560px] w-full place-items-center text-sm text-[#737373]">No products to feature yet.</div>;
+    return (
+      <div className="grid h-[calc(100svh-4rem)] min-h-[560px] w-full place-items-center text-sm text-[#737373]">
+        No products to feature yet.
+      </div>
+    );
   }
 
   return (
@@ -116,10 +120,7 @@ const CoverFlowCarousel = ({ products }: { products: Product[] }) => {
       className="relative flex h-[calc(100svh-4rem)] min-h-[560px] w-full cursor-grab select-none items-center justify-center overflow-hidden active:cursor-grabbing"
       style={{ perspective: `${C.persp}px` }}
     >
-      <div
-        className="relative"
-        style={{ transformStyle: "preserve-3d" }}
-      >
+      <div className="relative" style={{ transformStyle: "preserve-3d" }}>
         {products.map((product, i) => {
           return (
             <div
@@ -140,7 +141,10 @@ const CoverFlowCarousel = ({ products }: { products: Product[] }) => {
                 href={`/products/${product.slug}`}
                 aria-label={`View ${product.name}`}
                 onClick={(event) => {
-                  const offset = wrappedOffset(i - pos.current, products.length);
+                  const offset = wrappedOffset(
+                    i - pos.current,
+                    products.length,
+                  );
                   const isCentered = Math.abs(offset) < 0.2;
 
                   if (moved.current > 6 || !isCentered) {
@@ -153,11 +157,25 @@ const CoverFlowCarousel = ({ products }: { products: Product[] }) => {
                 }}
                 className="block cursor-pointer"
               >
-                <div className="relative overflow-hidden rounded-md bg-[#efeee8] ring-1 ring-black/10" style={{ width: C.cw, height: C.ch }}>
+                <div
+                  className="relative overflow-hidden rounded-md bg-[#efeee8] ring-1 ring-black/10"
+                  style={{ width: C.cw, height: C.ch }}
+                >
                   {product.images[0]?.secureUrl ? (
-                    <Image fill priority={i < 3} quality={90} sizes="300px" src={product.images[0].secureUrl} alt="" draggable={false} className="pointer-events-none object-cover" />
+                    <Image
+                      fill
+                      priority={i < 3}
+                      quality={90}
+                      sizes="300px"
+                      src={product.images[0].secureUrl}
+                      alt=""
+                      draggable={false}
+                      className="pointer-events-none object-cover"
+                    />
                   ) : (
-                    <div className="grid size-full place-items-center font-serif text-5xl text-[#b3b5a9]">N.</div>
+                    <div className="grid size-full place-items-center font-serif text-5xl text-[#b3b5a9]">
+                      N.
+                    </div>
                   )}
                 </div>
                 <div
@@ -167,11 +185,23 @@ const CoverFlowCarousel = ({ products }: { products: Product[] }) => {
                     width: C.cw,
                     height: C.ch,
                     transform: "scaleY(-1)",
-                    maskImage: "linear-gradient(to top, rgba(0,0,0,0.5), transparent 55%)",
-                    WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.5), transparent 55%)",
+                    maskImage:
+                      "linear-gradient(to top, rgba(0,0,0,0.5), transparent 55%)",
+                    WebkitMaskImage:
+                      "linear-gradient(to top, rgba(0,0,0,0.5), transparent 55%)",
                   }}
                 >
-                  {product.images[0]?.secureUrl && <Image fill quality={90} sizes="300px" src={product.images[0].secureUrl} alt="" draggable={false} className="object-cover" />}
+                  {product.images[0]?.secureUrl && (
+                    <Image
+                      fill
+                      quality={90}
+                      sizes="300px"
+                      src={product.images[0].secureUrl}
+                      alt=""
+                      draggable={false}
+                      className="object-cover"
+                    />
+                  )}
                 </div>
               </Link>
             </div>

@@ -1,7 +1,8 @@
 import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 import { readSession } from "./session";
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 export const apiClient = axios.create({
   baseURL: API_URL,
   headers: { Accept: "application/json" },
@@ -12,7 +13,15 @@ export class ApiError extends Error {
   status?: number;
   details?: unknown;
   requestId?: string;
-  constructor(message: string, options: { code?: string; status?: number; details?: unknown; requestId?: string } = {}) {
+  constructor(
+    message: string,
+    options: {
+      code?: string;
+      status?: number;
+      details?: unknown;
+      requestId?: string;
+    } = {},
+  ) {
     super(message);
     this.name = "ApiError";
     this.code = options.code || "NETWORK_ERROR";
@@ -24,19 +33,35 @@ export class ApiError extends Error {
 
 apiClient.interceptors.request.use((config) => {
   const session = readSession();
-  if (session?.token) config.headers.set("Authorization", `Bearer ${session.token}`);
+  if (session?.token)
+    config.headers.set("Authorization", `Bearer ${session.token}`);
   return config;
 });
 
 export type Category = { _id: string; name: string; slug: string };
 export type Product = {
-  _id: string; name: string; slug: string; description: string; shortDescription: string;
-  category: Category; brand: string; sku?: string; priceMinor: number; salePriceMinor: number;
-  discountPercent: number; currency: string; availablePieces: number; trackInventory: boolean;
-  status: string; images: { _id: string; secureUrl: string; altText: string }[];
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  shortDescription: string;
+  category: Category;
+  brand: string;
+  sku?: string;
+  priceMinor: number;
+  salePriceMinor: number;
+  discountPercent: number;
+  currency: string;
+  availablePieces: number;
+  trackInventory: boolean;
+  status: string;
+  images: { _id: string; secureUrl: string; altText: string }[];
   attributes?: { name: string; value: string }[];
 };
-export type ProductPage = { items: Product[]; pagination: { page: number; limit: number; total: number; pages: number } };
+export type ProductPage = {
+  items: Product[];
+  pagination: { page: number; limit: number; total: number; pages: number };
+};
 export type WishlistPage = ProductPage;
 export type Order = {
   _id?: string;
@@ -56,7 +81,16 @@ export type Order = {
     postalCode?: string;
     deliveryInstructions?: string;
   };
-  items: { _id?: string; product?: string; productName?: string; name?: string; quantity: number; lineTotalMinor: number; unitPriceMinor?: number; imageUrl?: string }[];
+  items: {
+    _id?: string;
+    product?: string;
+    productName?: string;
+    name?: string;
+    quantity: number;
+    lineTotalMinor: number;
+    unitPriceMinor?: number;
+    imageUrl?: string;
+  }[];
   currency: string;
   subtotalMinor: number;
   discountAmountMinor?: number;
@@ -69,7 +103,10 @@ export type Order = {
   paymentHistory?: { status: string; note?: string; at: string }[];
   adminNotes?: { text: string; createdAt: string }[];
 };
-export type OrderPage = { items: Order[]; pagination: { page: number; limit: number; total: number; pages: number } };
+export type OrderPage = {
+  items: Order[];
+  pagination: { page: number; limit: number; total: number; pages: number };
+};
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const config: AxiosRequestConfig = {
@@ -86,13 +123,28 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   } catch (error) {
     if (error instanceof AxiosError) {
       const payload = error.response?.data;
-      throw new ApiError(payload?.message || (error.response ? `Request failed (${error.response.status})` : "Unable to reach the server. Check your connection and try again."), {
-        code: payload?.code || (error.response ? "REQUEST_FAILED" : "NETWORK_ERROR"), status: error.response?.status,
-        details: payload?.details, requestId: payload?.requestId,
-      });
+      throw new ApiError(
+        payload?.message ||
+          (error.response
+            ? `Request failed (${error.response.status})`
+            : "Unable to reach the server. Check your connection and try again."),
+        {
+          code:
+            payload?.code ||
+            (error.response ? "REQUEST_FAILED" : "NETWORK_ERROR"),
+          status: error.response?.status,
+          details: payload?.details,
+          requestId: payload?.requestId,
+        },
+      );
     }
     throw error;
   }
 }
 
-export const formatPrice = (minor: number, currency = "PKR") => new Intl.NumberFormat("en-PK", { style: "currency", currency, maximumFractionDigits: 2 }).format(minor / 100);
+export const formatPrice = (minor: number, currency = "PKR") =>
+  new Intl.NumberFormat("en-PK", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 2,
+  }).format(minor / 100);

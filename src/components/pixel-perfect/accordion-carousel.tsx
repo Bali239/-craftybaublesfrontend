@@ -9,12 +9,42 @@ import { useEffect, useState } from "react";
 
 // Flat, high-contrast swatches: a solid fill, one hard-edged motif, and a text colour that reads on it.
 const SWATCHES = [
-  { bg: "#ff5f1f", ink: "#151515", motif: "conic-gradient(at 62.5% 37.5%, #f6a8f2 25%, transparent 0) 0 0 / 32px 32px" },
-  { bg: "#2d4bff", ink: "#ffffff", motif: "linear-gradient(90deg, #9dbbff 2px, transparent 0) 0 0 / 44px 44px, linear-gradient(#9dbbff 2px, transparent 0) 0 0 / 44px 44px" },
-  { bg: "#f6a8f2", ink: "#151515", motif: "repeating-radial-gradient(circle at 30% 70%, #ff5f1f 0 12px, transparent 12px 34px)" },
-  { bg: "#ffb000", ink: "#151515", motif: "repeating-linear-gradient(45deg, #151515 0 9px, transparent 9px 30px)" },
-  { bg: "#6b3ce6", ink: "#ffffff", motif: "radial-gradient(circle, #ffb000 0 7px, transparent 7.5px) 0 0 / 36px 36px" },
-  { bg: "#9dbbff", ink: "#151515", motif: "repeating-linear-gradient(0deg, #2d4bff 0 6px, transparent 6px 22px)" },
+  {
+    bg: "#ff5f1f",
+    ink: "#151515",
+    motif:
+      "conic-gradient(at 62.5% 37.5%, #f6a8f2 25%, transparent 0) 0 0 / 32px 32px",
+  },
+  {
+    bg: "#2d4bff",
+    ink: "#ffffff",
+    motif:
+      "linear-gradient(90deg, #9dbbff 2px, transparent 0) 0 0 / 44px 44px, linear-gradient(#9dbbff 2px, transparent 0) 0 0 / 44px 44px",
+  },
+  {
+    bg: "#f6a8f2",
+    ink: "#151515",
+    motif:
+      "repeating-radial-gradient(circle at 30% 70%, #ff5f1f 0 12px, transparent 12px 34px)",
+  },
+  {
+    bg: "#ffb000",
+    ink: "#151515",
+    motif:
+      "repeating-linear-gradient(45deg, #151515 0 9px, transparent 9px 30px)",
+  },
+  {
+    bg: "#6b3ce6",
+    ink: "#ffffff",
+    motif:
+      "radial-gradient(circle, #ffb000 0 7px, transparent 7.5px) 0 0 / 36px 36px",
+  },
+  {
+    bg: "#9dbbff",
+    ink: "#151515",
+    motif:
+      "repeating-linear-gradient(0deg, #2d4bff 0 6px, transparent 6px 22px)",
+  },
 ];
 
 const PANELS = [
@@ -61,14 +91,16 @@ const AccordionCarousel = () => {
                 color: swatch.ink,
               }}
             >
-
               {/* sideways label while collapsed */}
               <motion.p
                 initial={false}
                 animate={{ opacity: isActive ? 0 : 1 }}
                 transition={{ duration: 0.25 }}
                 className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md px-1 py-2 text-xs font-medium uppercase tracking-[0.25em]"
-                style={{ writingMode: "vertical-rl", backgroundColor: swatch.bg }}
+                style={{
+                  writingMode: "vertical-rl",
+                  backgroundColor: swatch.bg,
+                }}
               >
                 {panel.title}
               </motion.p>

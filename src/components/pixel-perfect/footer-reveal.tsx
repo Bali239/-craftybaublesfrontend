@@ -30,7 +30,8 @@ export default function FooterReveal({ children }: FooterRevealProps) {
                 NaqshCorner
               </p>
               <p className="mt-3 max-w-sm text-sm leading-6 text-white/65">
-                Everyday essentials and considered details, gathered in one place.
+                Everyday essentials and considered details, gathered in one
+                place.
               </p>
             </div>
 
@@ -39,8 +40,22 @@ export default function FooterReveal({ children }: FooterRevealProps) {
                 Explore
               </p>
               <ul className="mt-4 space-y-3 text-sm">
-                <li><Link className="text-white/80 transition-colors hover:text-white" href="/shop">Shop all</Link></li>
-                <li><Link className="text-white/80 transition-colors hover:text-white" href="/cart">Your cart</Link></li>
+                <li>
+                  <Link
+                    className="text-white/80 transition-colors hover:text-white"
+                    href="/shop"
+                  >
+                    Shop all
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="text-white/80 transition-colors hover:text-white"
+                    href="/cart"
+                  >
+                    Your cart
+                  </Link>
+                </li>
               </ul>
             </nav>
           </div>

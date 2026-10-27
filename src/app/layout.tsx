@@ -8,7 +8,7 @@ import StoreHeader from "../components/StoreHeader";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "NaqshCorner | Thoughtfully chosen",
@@ -20,7 +20,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className="min-h-screen bg-[#fbfaf7] font-sans text-[#252820] antialiased">
         <AntdRegistry>
-          <Providers><StoreHeader /><FooterReveal>{children}</FooterReveal></Providers>
+          <Providers>
+            <StoreHeader />
+            <FooterReveal>{children}</FooterReveal>
+          </Providers>
         </AntdRegistry>
       </body>
     </html>
