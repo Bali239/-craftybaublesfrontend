@@ -245,10 +245,10 @@ export default function AdminOrdersPage() {
           <section className="border-t border-[#eceae3] pt-4">
             <h2 className="text-xs font-semibold uppercase tracking-[0.12em] text-[#858978]">Order status</h2>
             <p className="mt-2 text-sm text-[#62675c]">Current: {statusLabels[selectedOrder.status] || selectedOrder.status}</p>
-            {statusTransitions[selectedOrder.status]?.length > 0 && <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <Select aria-label="Next order status" value={nextStatus || undefined} onChange={setNextStatus} placeholder="Choose next status" className="flex-1" options={(statusTransitions[selectedOrder.status] || []).map((value) => ({ value, label: statusLabels[value] }))} />
-              <Button type="primary" disabled={!nextStatus} loading={statusMutation.isPending} onClick={() => statusMutation.mutate({ order: selectedOrder, status: nextStatus })}>Update status</Button>
-            </div>}
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+              <Select aria-label="Next order status" value={nextStatus || undefined} onChange={setNextStatus} placeholder="Choose status" className="flex-1" options={Object.entries(statusLabels).map(([value, label]) => ({ value, label }))} />
+              <Button type="primary" disabled={!nextStatus || nextStatus === selectedOrder.status} loading={statusMutation.isPending} onClick={() => statusMutation.mutate({ order: selectedOrder, status: nextStatus })}>Update status</Button>
+            </div>
           </section>
 
           <section className="border-t border-[#eceae3] pt-4">
