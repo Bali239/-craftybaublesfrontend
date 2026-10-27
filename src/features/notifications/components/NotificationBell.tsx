@@ -127,7 +127,7 @@ export default function NotificationBell() {
       onOpenChange={setOpen}
       placement="bottomRight"
     >
-      <button className="relative flex h-9 w-9 items-center justify-center rounded-full text-[#303429] hover:bg-black/5">
+      <button className="relative flex h-9 w-9 items-center justify-center rounded-full text-white hover:bg-white/10 cursor-pointer">
         <Bell size={18} />
         {unreadCount > 0 && (
           <Badge

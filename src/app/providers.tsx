@@ -52,10 +52,14 @@ export default function Providers({ children }: { children: ReactNode }) {
           {children}
           <Toaster
             position="top-right"
-            className="!left-3 !right-3 !top-[max(0.75rem,env(safe-area-inset-top))] !w-auto sm:!left-auto sm:!right-4 sm:!top-4 sm:!w-[min(24rem,calc(100vw-2rem))]"
+            richColors
+            closeButton
+            expand
+            className="!left-3 !right-3 !top-[max(0.75rem,env(safe-area-inset-top))] !w-auto sm:!left-auto sm:!right-4 sm:!top-4 sm:!w-[min(26rem,calc(100vw-2rem))]"
             toastOptions={{
               className:
-                "!min-h-[3.25rem] !w-full !max-w-none !rounded-xl !border !border-border !bg-background !px-3.5 !py-3 !text-sm !leading-snug !text-foreground !shadow-lg sm:!px-4",
+                "!min-h-[3.25rem] !w-full !rounded-xl !border !border-[#e7e5dc] !bg-white !px-4 !py-3 !text-sm !leading-snug !text-[#252820] !shadow-lg",
+              duration: 4000,
             }}
           />
         </ConfigProvider>

@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+@layer base {
+  a,
+  button,
+  [role="button"],
+  label[for],
+  summary,
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  button:disabled,
+  [disabled] {
+    cursor: not-allowed;
+  }
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

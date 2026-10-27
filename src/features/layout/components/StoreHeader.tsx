@@ -129,14 +129,14 @@ export default function StoreHeader() {
 
   return (
     <>
-      <div aria-hidden="true" className="h-16 sm:h-[76px]" />
-      <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-2 py-3 sm:py-4 [&_a]:cursor-pointer">
+      <div aria-hidden="true" className="h-14 sm:h-[76px]" />
+      <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-1.5 py-2 sm:px-2 sm:py-3 [&_a]:cursor-pointer">
         <nav
           aria-label="Primary"
-          className="w-fit max-w-full overflow-x-auto rounded-full bg-[#17191d] p-1.5 shadow-lg shadow-black/15"
+          className="w-full max-w-[calc(100vw-0.75rem)] sm:w-fit sm:max-w-full overflow-x-auto overscroll-x-contain scrollbar-hide rounded-full bg-[#17191d] p-0.5 sm:p-1 shadow-lg shadow-black/15"
         >
           <LayoutGroup id="store-nav-active-pill">
-            <div className="flex w-max max-w-full items-center justify-center gap-0.5">
+            <div className="flex w-max min-w-full sm:min-w-0 items-center justify-center gap-0.5 px-0.5">
               {navItems.map((item) => {
                 const active = activeKey === item.key;
                 return (
@@ -145,7 +145,7 @@ export default function StoreHeader() {
                     href={item.href}
                     onClick={item.key === "cart" ? openCart : undefined}
                     aria-current={active ? "page" : undefined}
-                    className={`relative isolate flex shrink-0 items-center justify-center rounded-full px-2.5 py-2 text-[11px] font-bold text-white transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#17191d] sm:px-4 sm:py-2.5 sm:text-sm ${active ? "text-[#17191d]" : "hover:text-white"}`}
+                    className={`relative isolate flex shrink-0 items-center justify-center rounded-full px-2 py-1.5 text-[9px] font-bold tracking-tight text-white transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#17191d] xs:px-2.5 xs:text-[10px] sm:px-4 sm:py-2 sm:text-sm cursor-pointer whitespace-nowrap ${active ? "text-[#17191d]" : "hover:text-white"}`}
                   >
                     {active && (
                       <motion.span

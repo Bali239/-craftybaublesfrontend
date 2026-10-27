@@ -122,21 +122,20 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     return response.data.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      const payload = error.response?.data;
-      throw new ApiError(
+      const payload = error.response?.data as any;
+      const message =
         payload?.message ||
-          (error.response
-            ? `Request failed (${error.response.status})`
-            : "Unable to reach the server. Check your connection and try again."),
-        {
-          code:
-            payload?.code ||
-            (error.response ? "REQUEST_FAILED" : "NETWORK_ERROR"),
-          status: error.response?.status,
-          details: payload?.details,
-          requestId: payload?.requestId,
-        },
-      );
+        (error.response
+          ? "Something went wrong while processing your request. Please try again."
+          : "We couldn't reach the server. Check your internet connection and try again.");
+      throw new ApiError(message, {
+        code:
+          payload?.code ||
+          (error.response ? "REQUEST_FAILED" : "NETWORK_ERROR"),
+        status: error.response?.status,
+        details: payload?.details,
+        requestId: payload?.requestId,
+      });
     }
     throw error;
   }
