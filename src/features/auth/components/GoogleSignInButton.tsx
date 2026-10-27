@@ -4,7 +4,7 @@ import { Button, type ButtonProps } from "antd";
 import { API_URL } from "../../../lib/api";
 
 type GoogleSignInButtonProps = Omit<ButtonProps, "href" | "onClick">;
-
+// Google sign in button that redirects to the Google OAuth flow. The button will redirect to the API route that handles the OAuth flow, and then the API route will redirect back to the client with the appropriate tokens.
 export default function GoogleSignInButton(props: GoogleSignInButtonProps) {
   const beginSignIn = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
