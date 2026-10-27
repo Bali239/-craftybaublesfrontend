@@ -9,7 +9,7 @@ import { api, formatPrice, type Order } from "../../lib/api";
 import { queryKeys } from "../../lib/queryKeys";
 import { readSession } from "../../lib/session";
 import { getSocket } from "../../lib/socket";
-import NotificationBell from "../../components/NotificationBell";
+import NotificationBell from "../../features/notifications/components/NotificationBell";
 
 const statusLabels: Record<string, string> = {
   placed: "Placed",

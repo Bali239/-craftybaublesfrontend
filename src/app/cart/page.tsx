@@ -17,7 +17,7 @@ import {
 import { toast } from "sonner";
 import { api, formatPrice, type Order, type Product } from "../../lib/api";
 import { readSession } from "../../lib/session";
-import GoogleSignInButton from "../../components/GoogleSignInButton";
+import GoogleSignInButton from "../../features/auth/components/GoogleSignInButton";
 
 type CartItem = {
   product: Product;

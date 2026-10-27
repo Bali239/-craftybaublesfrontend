@@ -13,7 +13,7 @@ import {
   type StoreUser,
 } from "../lib/session";
 import { disconnectSocket } from "../lib/socket";
-import NotificationBell from "./NotificationBell";
+import NotificationBell from "../features/notifications/components/NotificationBell";
 
 export default function StoreHeader() {
   const pathname = usePathname();

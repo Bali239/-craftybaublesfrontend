@@ -13,8 +13,8 @@ import { api, formatPrice, type Product } from "../../../lib/api";
 import { queryKeys } from "../../../lib/queryKeys";
 import { readSession } from "../../../lib/session";
 import { setCategory, type AppDispatch } from "../../../store/store";
-import GoogleSignInButton from "../../../components/GoogleSignInButton";
-import WishlistButton from "../../../components/WishlistButton";
+import GoogleSignInButton from "../../../features/auth/components/GoogleSignInButton";
+import WishlistButton from "../../../features/wishlist/components/WishlistButton";
 
 export default function ProductDetailPage() {
   const params = useParams<{ identifier: string }>();

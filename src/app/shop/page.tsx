@@ -23,7 +23,7 @@ import {
 } from "antd";
 import { SlidersHorizontal, X } from "lucide-react";
 import { toast } from "sonner";
-import WishlistButton from "../../components/WishlistButton";
+import WishlistButton from "../../features/wishlist/components/WishlistButton";
 import {
   api,
   formatPrice,

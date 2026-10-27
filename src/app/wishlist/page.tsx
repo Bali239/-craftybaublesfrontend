@@ -25,8 +25,8 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-import GoogleSignInButton from "../../components/GoogleSignInButton";
-import WishlistButton from "../../components/WishlistButton";
+import GoogleSignInButton from "../../features/auth/components/GoogleSignInButton";
+import WishlistButton from "../../features/wishlist/components/WishlistButton";
 import { api, formatPrice, type WishlistPage } from "../../lib/api";
 import { readSession } from "../../lib/session";
 import {

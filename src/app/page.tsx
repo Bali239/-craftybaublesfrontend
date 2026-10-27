@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import WishlistButton from "../components/WishlistButton";
+import WishlistButton from "../features/wishlist/components/WishlistButton";
 import { api, formatPrice, type Category, type ProductPage } from "../lib/api";
 import { queryKeys } from "../lib/queryKeys";
 
