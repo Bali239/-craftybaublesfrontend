@@ -106,12 +106,8 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-[#fbfaf7] [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_img]:cursor-pointer">
       <main className="mx-auto max-w-6xl px-5 py-8 md:py-10">
-        <Modal open={showSuccessModal} onOk={() => { setShowSuccessModal(false); router.push("/shop"); }} onCancel={() => { setShowSuccessModal(false); router.push("/shop"); }} okText="Back to shopping" cancelText="Close" centered title="Order placed successfully">
-          <p className="mt-2 text-sm leading-6 text-[#5d6156]">Your order has been received and our representative will contact you shortly. A confirmation email has also been sent to the admin team.</p>
-          <div className="mt-4 rounded-xl bg-[#f5f4ee] p-3">
-            <p className="text-xs uppercase tracking-[0.18em] text-[#858978]">Order number</p>
-            <p className="mt-1 text-lg font-semibold text-[#303429]">{orderNumber}</p>
-          </div>
+        <Modal open={showSuccessModal} onOk={() => { setShowSuccessModal(false); router.push("/orders"); }} onCancel={() => { setShowSuccessModal(false); router.push("/orders"); }} okText="View my orders" cancelText="Close" centered title="Order placed successfully">
+          <p className="mt-2 text-sm leading-6 text-[#5d6156]">Your order has been received and our representative will contact you shortly. You can track its status from the Orders page.</p>
         </Modal>
         <Link href="/cart" className="text-sm text-[#7c806f]">← Back to cart</Link>
         <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">

@@ -114,7 +114,7 @@ export default function OrderDetailPage() {
         <div className="mt-5 flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-[10px] font-bold tracking-[0.2em] text-[#858978]">ORDER DETAILS</p>
-            <h1 className="mt-2 font-serif text-3xl text-[#303429] sm:text-4xl">{order.orderNumber}</h1>
+            <h1 className="mt-2 font-serif text-3xl text-[#303429] sm:text-4xl">Your Order</h1>
             <p className="mt-2 text-sm text-[#77796e]">Placed {dateLabel(order.createdAt)}</p>
           </div>
           <div className="flex flex-wrap gap-2">

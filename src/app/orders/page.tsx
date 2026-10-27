@@ -99,7 +99,7 @@ export default function OrdersPage() {
               <Link key={order._id || order.orderNumber} href={`/orders/${order.orderNumber}`} className={`flex flex-col gap-3 rounded-xl border p-4 transition hover:shadow-sm sm:flex-row sm:items-center sm:justify-between ${statusBackground[order.status] || "bg-white border-[#e7e5dc]"}`}>
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-semibold text-[#303429]">{order.orderNumber}</p>
+                    <p className="font-semibold text-[#303429]">Order</p>
                     <Tag color={statusTagColors[order.status] || "default"}>{statusLabels[order.status] || order.status}</Tag>
                     <Tag color={order.paymentStatus === "collected" ? "green" : order.paymentStatus === "failed" ? "red" : "gold"}>{paymentLabels[order.paymentStatus] || order.paymentStatus}</Tag>
                   </div>
