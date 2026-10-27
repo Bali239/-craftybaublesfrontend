@@ -27,14 +27,14 @@ const paymentLabels: Record<string, string> = {
   refunded: "Refunded",
 };
 
-const statusColors: Record<string, string> = {
-  placed: "blue",
-  confirmed: "cyan",
-  processing: "gold",
-  shipped: "geekblue",
-  delivered: "green",
-  cancelled: "red",
-  returned: "volcano",
+const statusBackground: Record<string, string> = {
+  placed: "bg-blue-50/70 border-blue-200",
+  confirmed: "bg-cyan-50/70 border-cyan-200",
+  processing: "bg-orange-50/70 border-orange-200",
+  shipped: "bg-purple-50/70 border-purple-200",
+  delivered: "bg-green-50/70 border-green-200",
+  cancelled: "bg-red-50/70 border-red-200",
+  returned: "bg-fuchsia-50/70 border-fuchsia-200",
 };
 
 const statusTagColors: Record<string, string> = {
@@ -96,7 +96,7 @@ export default function OrdersPage() {
         <section className="mt-6 space-y-3">
           {ordersQuery.isLoading ? <Skeleton active paragraph={{ rows: 4 }} /> : ordersQuery.data?.length ? (
             ordersQuery.data.map((order) => (
-              <Link key={order._id || order.orderNumber} href={`/orders/${order.orderNumber}`} className="flex flex-col gap-3 rounded-xl border border-[#e7e5dc] bg-white p-4 transition hover:border-[#c9c7b8] sm:flex-row sm:items-center sm:justify-between">
+              <Link key={order._id || order.orderNumber} href={`/orders/${order.orderNumber}`} className={`flex flex-col gap-3 rounded-xl border p-4 transition hover:shadow-sm sm:flex-row sm:items-center sm:justify-between ${statusBackground[order.status] || "bg-white border-[#e7e5dc]"}`}>
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-semibold text-[#303429]">{order.orderNumber}</p>

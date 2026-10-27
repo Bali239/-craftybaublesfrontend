@@ -48,6 +48,16 @@ const statusColors: Record<string, string> = {
   returned: "magenta",
 };
 
+const statusRowBackground: Record<string, string> = {
+  placed: "bg-blue-50/40",
+  confirmed: "bg-cyan-50/40",
+  processing: "bg-orange-50/40",
+  shipped: "bg-purple-50/40",
+  delivered: "bg-green-50/40",
+  cancelled: "bg-red-50/40",
+  returned: "bg-fuchsia-50/40",
+};
+
 const dateLabel = (value?: string) => value ? new Date(value).toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" }) : "-";
 
 export default function AdminOrdersPage() {
@@ -209,7 +219,7 @@ export default function AdminOrdersPage() {
                 pagination={false}
                 loading={ordersQuery.isFetching}
                 scroll={{ x: 920 }}
-                onRow={(order) => ({ onDoubleClick: () => openOrder(order) })}
+                onRow={(order) => ({ onDoubleClick: () => openOrder(order), className: statusRowBackground[order.status] || "" })}
               />
               {ordersQuery.data.pagination.pages > 1 && <div className="mt-5 flex justify-center"><Pagination current={page} pageSize={ordersQuery.data.pagination.limit} total={ordersQuery.data.pagination.total} showSizeChanger={false} onChange={setPage} /></div>}
             </>
