@@ -3,7 +3,6 @@ import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
 import "./globals.css";
 import Providers from "./providers";
-import FooterReveal from "../shared/components/pixel-perfect/footer-reveal";
 import StoreHeader from "../features/layout/components/StoreHeader";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -22,7 +21,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <AntdRegistry>
           <Providers>
             <StoreHeader />
-            <FooterReveal>{children}</FooterReveal>
+            {children}
           </Providers>
         </AntdRegistry>
       </body>

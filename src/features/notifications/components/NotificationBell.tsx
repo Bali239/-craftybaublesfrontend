@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
 import { Dropdown, List, Button, Empty, Typography, Badge } from "antd";
-import { api } from "../lib/api";
-import { getSocket } from "../lib/socket";
-import { readSession } from "../lib/session";
+import { api } from "../../../lib/api";
+import { getSocket } from "../../../lib/socket";
+import { readSession } from "../../../lib/session";
 
 type Notification = {
   _id: string;

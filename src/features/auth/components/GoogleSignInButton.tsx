@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, type ButtonProps } from "antd";
-import { API_URL } from "../lib/api";
+import { API_URL } from "../../../lib/api";
 
 type GoogleSignInButtonProps = Omit<ButtonProps, "href" | "onClick">;
 

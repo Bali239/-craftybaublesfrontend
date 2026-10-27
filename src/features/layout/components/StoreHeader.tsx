@@ -5,15 +5,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { LayoutGroup, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { API_URL, api } from "../lib/api";
+import { API_URL, api } from "../../../lib/api";
 import {
   clearSession,
   readSession,
   saveSession,
   type StoreUser,
-} from "../lib/session";
-import { disconnectSocket } from "../lib/socket";
-import NotificationBell from "../features/notifications/components/NotificationBell";
+} from "../../../lib/session";
+import { disconnectSocket } from "../../../lib/socket";
+import NotificationBell from "../../notifications/components/NotificationBell";
 
 export default function StoreHeader() {
   const pathname = usePathname();

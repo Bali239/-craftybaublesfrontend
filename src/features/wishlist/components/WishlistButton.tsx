@@ -4,8 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "antd";
 import { Heart } from "lucide-react";
 import { toast } from "sonner";
-import { api, type Product, type WishlistPage } from "../lib/api";
-import { readSession } from "../lib/session";
+import { api, type Product, type WishlistPage } from "../../../lib/api";
+import { readSession } from "../../../lib/session";
 import { useEffect, useState } from "react";
 
 type WishlistButtonProps = {
