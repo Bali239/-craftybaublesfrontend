@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { API_URL, api } from "../lib/api";
 import { clearSession, readSession, saveSession, type StoreUser } from "../lib/session";
+import { disconnectSocket } from "../lib/socket";
 
 export default function StoreHeader() {
   const pathname = usePathname();
@@ -43,6 +44,7 @@ export default function StoreHeader() {
       }
     }).catch(() => {
       clearSession();
+      disconnectSocket();
       if (!cancelled) setUser(null);
     });
     return () => { cancelled = true; };
@@ -54,9 +56,11 @@ export default function StoreHeader() {
       ? "cart"
       :  pathname.startsWith("/wishlist")
           ? "wishlist"
-          : pathname === "/shop" || pathname.startsWith("/products/")
-            ? "shop"
-            : "home";
+          : pathname.startsWith("/orders")
+            ? "orders"
+            : pathname === "/shop" || pathname.startsWith("/products/")
+              ? "shop"
+              : "home";
 
   const startGoogleSignIn = () => {
     const authorizationUrl = new URL("/api/auth/google", API_URL);
@@ -87,6 +91,7 @@ export default function StoreHeader() {
     { key: "home", label: "Home", href: "/" },
     { key: "shop", label: "Shop", href: "/shop" },
     { key: "wishlist", label: "Wishlist", href: "/wishlist" },
+    { key: "orders", label: "My Orders", href: "/orders" },
     { key: "cart", label: "Cart", href: "/cart" },
     ...(user?.role === "admin" ? [{ key: "admin", label: "Manage Store", href: "/admin" }] : []),
   ];
