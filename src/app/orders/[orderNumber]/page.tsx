@@ -30,11 +30,21 @@ const paymentLabels: Record<string, string> = {
 const statusColors: Record<string, string> = {
   placed: "blue",
   confirmed: "cyan",
-  processing: "gold",
-  shipped: "geekblue",
+  processing: "orange",
+  shipped: "purple",
   delivered: "green",
   cancelled: "red",
-  returned: "orange",
+  returned: "magenta",
+};
+
+const timelineStatusColors: Record<string, string> = {
+  placed: "blue",
+  confirmed: "cyan",
+  processing: "orange",
+  shipped: "purple",
+  delivered: "green",
+  cancelled: "red",
+  returned: "magenta",
 };
 
 const dateLabel = (value?: string) => value ? new Date(value).toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" }) : "-";
@@ -88,7 +98,7 @@ export default function OrderDetailPage() {
   const order = orderQuery.data;
   const timelineItems = [
     ...(order.statusHistory || []).slice().reverse().map((entry: any) => ({
-      color: statusColors[entry.status] === "green" ? "green" : statusColors[entry.status] === "red" ? "red" : "blue",
+      color: timelineStatusColors[entry.status] || "blue",
       content: <div><p className="font-medium text-[#303429]">{statusLabels[entry.status] || entry.status}</p>{entry.note && <p className="text-sm text-[#62675c]">{entry.note}</p>}<p className="text-xs text-[#858978]">{dateLabel(entry.at)}</p></div>,
     })),
     ...(order.paymentHistory || []).slice().reverse().map((entry: any) => ({

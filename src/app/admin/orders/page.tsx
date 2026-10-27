@@ -41,11 +41,11 @@ const statusTransitions: Record<string, string[]> = {
 const statusColors: Record<string, string> = {
   placed: "blue",
   confirmed: "cyan",
-  processing: "gold",
-  shipped: "geekblue",
+  processing: "orange",
+  shipped: "purple",
   delivered: "green",
   cancelled: "red",
-  returned: "orange",
+  returned: "magenta",
 };
 
 const dateLabel = (value?: string) => value ? new Date(value).toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" }) : "-";

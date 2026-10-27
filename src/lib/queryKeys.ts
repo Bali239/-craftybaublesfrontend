@@ -12,5 +12,6 @@ export const queryKeys = {
   },
   orders: {
     adminList: ["orders", "admin", "list"] as const,
+    mine: ["orders", "mine"] as const,
   },
 };

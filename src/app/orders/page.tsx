@@ -34,7 +34,17 @@ const statusColors: Record<string, string> = {
   shipped: "geekblue",
   delivered: "green",
   cancelled: "red",
-  returned: "orange",
+  returned: "volcano",
+};
+
+const statusTagColors: Record<string, string> = {
+  placed: "blue",
+  confirmed: "cyan",
+  processing: "orange",
+  shipped: "purple",
+  delivered: "green",
+  cancelled: "red",
+  returned: "magenta",
 };
 
 const dateLabel = (value?: string) => value ? new Date(value).toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" }) : "-";
@@ -90,7 +100,7 @@ export default function OrdersPage() {
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-semibold text-[#303429]">{order.orderNumber}</p>
-                    <Tag color={statusColors[order.status] || "default"}>{statusLabels[order.status] || order.status}</Tag>
+                    <Tag color={statusTagColors[order.status] || "default"}>{statusLabels[order.status] || order.status}</Tag>
                     <Tag color={order.paymentStatus === "collected" ? "green" : order.paymentStatus === "failed" ? "red" : "gold"}>{paymentLabels[order.paymentStatus] || order.paymentStatus}</Tag>
                   </div>
                   <p className="mt-1 text-sm text-[#858978]">Placed {dateLabel(order.createdAt)} · {order.items?.length || 0} item(s)</p>
